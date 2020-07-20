@@ -1,0 +1,28 @@
+var express = require('express');
+var googleRouter = express.Router();
+
+var passportGeneral = require("passport");
+googleRouter.get("/",function (req,res) {
+        console.log("google home page")
+})
+
+
+googleRouter.get("/callback",passportGeneral.authenticate('google',{failureRedirect: "/"}),
+    function (req,res) {
+            let userAtt= {
+                google_id : req.user.google_id
+            }
+            req.login(userAtt, async function(err){
+                    if(err){
+                            console.log(err)
+                            userData = await User.findOne({
+                                    where: userAtt
+                            })
+                            return res.redirect("errorpage")
+                    }
+                    console.log("allgood")
+                    return res.redirect("../"+ "home/dashboard")
+            })
+})
+
+module.exports = googleRouter;

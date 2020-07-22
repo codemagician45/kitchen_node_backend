@@ -77,9 +77,12 @@ app.listen(3100, function () {
         user: userInfo,
       });
     }
+    else {
+      res.status(401).send({ error: "uw wachtwoord of gebruikersnaam zijn niet correct.", login: false });
+    }
   });
 
-  app.post("/googlelogin", upload.none(), async function (req, res) {
+  app.post("/googlelogin", upload.none(), async (req, res) => {
     const { tokenId } = req.body;
     client
       .verifyIdToken({
@@ -91,7 +94,6 @@ app.listen(3100, function () {
 
         if (email_verified) {
           let userInfo = await user.findOne({ where: { email: email } });
-          console.log(userInfo)
           if (userInfo) {
             const token = jwt.sign(
               {
@@ -110,8 +112,11 @@ app.listen(3100, function () {
               user: userInfo,
             });
           } else {
-            res.status(400).send({ error: "Something went wrong..." });
+            res.status(401).send({ error: "This email is not registered, Firstly register.", login: false });
           }
+        }
+        else {
+          res.status(401).send({ error: "Something went wrong...", login: false });
         }
       });
   });
@@ -147,7 +152,7 @@ app.listen(3100, function () {
               user: userInfo,
             });
         } else {
-            response.status(400).send({ error: "Something went wrong..." });
+            response.status(400).send({ error: "This email is not registered, Firstly register." });
         }
     })
   })

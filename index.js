@@ -152,7 +152,7 @@ app.listen(3100, function () {
               user: userInfo,
             });
         } else {
-            response.status(400).send({ error: "This email is not registered, Firstly register." });
+            response.status(400).send({ error: "This email is not registered, Firstly register.", login: false });
         }
     })
   })

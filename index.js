@@ -5,7 +5,7 @@ const session = require("express-session");
 var md5 = require("md5");
 var jwt = require("jsonwebtoken");
 const { OAuth2Client } = require("google-auth-library");
-const fetch = require('node-fetch');
+const fetch = require("node-fetch");
 
 var app = express();
 app.use(bodyParser.json()); // support json encoded bodies
@@ -76,9 +76,11 @@ app.listen(3100, function () {
         token: token,
         user: userInfo,
       });
-    }
-    else {
-      res.status(401).send({ error: "uw wachtwoord of gebruikersnaam zijn niet correct.", login: false });
+    } else {
+      res.status(401).send({
+        error: "uw wachtwoord of gebruikersnaam zijn niet correct.",
+        login: false,
+      });
     }
   });
 
@@ -112,50 +114,115 @@ app.listen(3100, function () {
               user: userInfo,
             });
           } else {
-            res.status(401).send({ error: "This email is not registered, Firstly register.", login: false });
+            user
+              .create({
+                email: email,
+                type: "client",
+              })
+              .then((newUser) => {
+                const token = jwt.sign(
+                  {
+                    muuid: newUser.id,
+                    memail: newUser.email,
+                    cid: newUser.type,
+                  },
+                  "secret_key",
+                  {
+                    expiresIn: "2h",
+                  }
+                );
+                profile.create({
+                  users_id: newUser.id,
+                });
+                res.send({
+                  success: true,
+                  login: true,
+                  token: token,
+                  user: newUser,
+                });
+              })
+              .catch((err) => {
+                res.send({
+                  success: false,
+                  reason: err.name,
+                });
+              });
           }
-        }
-        else {
-          res.status(401).send({ error: "Something went wrong...", login: false });
+        } else {
+          res
+            .status(401)
+            .send({ error: "Something went wrong...", login: false });
         }
       });
   });
 
   app.post("/facebooklogin", upload.none(), async function (request, response) {
-    const {userID, accessToken} = request.body;
+    const { userID, accessToken } = request.body;
 
     let urlGraphFacebook = `https://graph.facebook.com/v2.11/${userID}/?fields=id,name,email&access_token=${accessToken}`;
     fetch(urlGraphFacebook, {
-        method: 'GET'
+      method: "GET",
     })
-    .then(res => res.json())
-    .then(async res => {
+      .then((res) => res.json())
+      .then(async (res) => {
         console.log(res);
-        const {email, name} = res;
+        const { email, name } = res;
         let userInfo = await user.findOne({ where: { email: email } });
-        console.log(userInfo)
+        console.log(userInfo);
         if (userInfo) {
-            const token = jwt.sign(
-              {
-                muuid: userInfo.id,
-                memail: userInfo.email,
-                cid: userInfo.type,
-              },
-              "secret_key",
-              {
-                expiresIn: "2h",
-              }
-            );
-            response.send({
-              login: true,
-              token: token,
-              user: userInfo,
-            });
+          const token = jwt.sign(
+            {
+              muuid: userInfo.id,
+              memail: userInfo.email,
+              cid: userInfo.type,
+            },
+            "secret_key",
+            {
+              expiresIn: "2h",
+            }
+          );
+          response.send({
+            login: true,
+            token: token,
+            user: userInfo,
+          });
         } else {
-            response.status(400).send({ error: "This email is not registered, Firstly register.", login: false });
+          user
+            .create({
+              email: email,
+              type: "client",
+            })
+            .then((newUser) => {
+              const token = jwt.sign(
+                {
+                  muuid: newUser.id,
+                  memail: newUser.email,
+                  cid: newUser.type,
+                },
+                "secret_key",
+                {
+                  expiresIn: "2h",
+                }
+              );
+              profile.create({
+                users_id: newUser.id,
+              });
+              res.send({
+                success: true,
+                login: true,
+                token: token,
+                user: newUser,
+              });
+            })
+            .catch((err) => {
+              res.send({
+                success: false,
+                reason: err.name,
+              });
+            });
         }
-    })
-  })
+      });
+  });
   /* WIP */
   app.get("/mailSent", upload.none(), function (req, res) {
     let mailResult = mailSender.mailSend({

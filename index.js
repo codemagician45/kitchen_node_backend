@@ -165,10 +165,8 @@ app.listen(3100, function () {
     })
       .then((res) => res.json())
       .then(async (res) => {
-        console.log(res);
         const { email, name } = res;
         let userInfo = await user.findOne({ where: { email: email } });
-        console.log(userInfo);
         if (userInfo) {
           const token = jwt.sign(
             {
@@ -207,7 +205,7 @@ app.listen(3100, function () {
               profile.create({
                 users_id: newUser.id,
               });
-              res.send({
+              response.send({
                 success: true,
                 login: true,
                 token: token,

@@ -8,11 +8,12 @@ const model = sequelize.define(
         id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
-            autoIncrement: true
+            autoIncrement: true,
         },
         email: {
             type: Sequelize.STRING,
-            allowNull: false
+            allowNull: false,
+            unique: true
         },
         password: {
             type: Sequelize.STRING,
@@ -26,6 +27,12 @@ const model = sequelize.define(
             type: Sequelize.STRING,
             allowNull: true
         },
+        message_token: {
+            type: Sequelize.STRING,
+            allowNull: true,
+            unique: true
+        },
+
 
     }, {
         defaultScope : {

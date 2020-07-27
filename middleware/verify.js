@@ -14,6 +14,7 @@ URLCheck["company"]=[
 ];
 URLCheck["client"]=[
     "/users/profile/password",
+    "/users/profile/upload",
     "/users/offers"];
 
 

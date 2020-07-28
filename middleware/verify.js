@@ -10,7 +10,8 @@ URLCheck["admin"]=[
 URLCheck["company"]=[
     "/companies/profile/password",
     "/companies/profile/upload",
-    "/companies/pay"
+    "/companies/pay",
+    "/companies/offers"
 ];
 URLCheck["client"]=[
     "/users/profile/password",

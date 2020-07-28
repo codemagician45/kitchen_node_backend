@@ -68,6 +68,10 @@ companyRouter.post("/profile/password", auth, multer.upload.none(), function (
   req.session.destroy();
 });
 
+companyRouter.post("/offers", auth, multer.upload.none(), function (req, res) {
+    console.log(req.session)
+});
+
 companyRouter.post("/pay", auth, multer.upload.none(), async function (req, res) {
   let amount = req.body.amount.toFixed(2).toString();
   const payment = await mollieClient.payments.create({
@@ -84,11 +88,11 @@ companyRouter.post("/pay", auth, multer.upload.none(), async function (req, res)
   console.log(payment.id);
   res.send(payment.getCheckoutUrl());
 });
-
+/*
 companyRouter.post("/check_pay", async function (req, res) {
 
   mollieClient.payments
-    .get(req.body.payment_id)
+    .get(req.body.payment_id)companies/profile/upload
     .then((payment) => {
       // E.g. check if the payment.isPaid()
       res.send(payment.isPaid())
@@ -97,7 +101,7 @@ companyRouter.post("/check_pay", async function (req, res) {
       // Handle the error
     });
 });
-
+*/
 companyRouter.post("/hook", async function (req, res) {
 
     console.log(req.body);

@@ -280,27 +280,51 @@ app.listen(3100, function () {
   });
 
   app.post("/companies_register", upload.none(), function (req, res) {
-    user
-      .create({
-        email: req.body.email,
-        password: md5(req.body.password),
-        type: "company",
+      const client = new StreamChat('kkzn98xebx9t', '7npmqra3csw3enwakqg2teek6tr9uyfzx2ex7zaw5txagcj7rs7rduc9z7n2cs74');
+
+      user.create({
+              email: req.body.email,
+              password: md5(req.body.password),
+              type: "company",
+          }).then(async (newUser) => {
+          const token = client.createToken(newUser.id.toString());
+          await client.setUser(
+              {
+                  id: newUser.id.toString(),
+                  name: req.body.email,
+              },
+              token,
+          ).then((userData)=>{
+              console.log(userData)
+              console.log(token)
+              user.update({message_token:token}, { where: { id: parseInt(userData.me.id)} }).then((result) => {
+                  let success=false;
+                  if(result==1){
+                      success=true
+                  }
+              });
+
+              company_profile.create({
+                  users_id: newUser.id,
+              });
+              res.send({
+                  success: true,
+                  user: newUser,
+              });
+              })
+          }).catch((err) => {
+              console.log(err)
+              res.send({
+                  success: false,
+                  reason: err.name,
+              });
       })
-      .then((newUser) => {
-        company_profile.create({
-          users_id: newUser.id,
-        });
-        res.send({
-          success: true,
-          user: newUser,
-        });
-      })
-      .catch((err) => {
-        res.send({
-          success: false,
-          reason: err.name,
-        });
-      });
+          .catch((err) => {
+              res.send({
+                  success: false,
+                  reason: err.name,
+              });
+          });
   });
 
   app.post("/logout", upload.none(), function (req, res) {

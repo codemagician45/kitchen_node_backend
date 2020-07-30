@@ -18,21 +18,19 @@ const mimeTypeToExtension={
     "image/svg+xml":"svg",
 }
 
-userRouter.post("/profile/upload",auth,multer.upload.single('photo'),function (req,res) {
-    let updateValues = req.body;
-    updateValues = {
-        ...updateValues,
-        "photo": req.file.filename+"."+mimeTypeToExtension[req.file.mimetype]
-    }
-    profiles.update(updateValues, { where: { users_id: req.session.userId } }).then((result) => {
-        let success=false;
-        if(result==1){
-            success=true
-        }
-        res.send({
-            "success":success
-        })
-    });
+userRouter.post("/profile/upload",auth,multer.upload.single('photo'), function (req, res) {
+        let updateValues = JSON.parse(req.body.user);
+        updateValues.photo = "images/"+req.file.filename + "." + mimeTypeToExtension[req.file.mimetype],
+            profiles.update(updateValues, { where: { users_id: req.userData.muuid } })
+                .then((result) => {
+                    let success = false;
+                    if (result == 1) {
+                        success = true;
+                    }
+                    res.send({
+                        success: success,
+                    });
+                });
 })
 
 

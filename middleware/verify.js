@@ -1,5 +1,7 @@
+
 const jwt = require('jsonwebtoken');
 const URLCheck= [];
+
 URLCheck["admin"]=[
     "/admin/dashboard/counts",
     "/admin/dashboard/companies",
@@ -11,7 +13,8 @@ URLCheck["company"]=[
     "/companies/profile/password",
     "/companies/profile/upload",
     "/companies/pay",
-    "/companies/offers"
+    "/companies/offers",
+    "/companies/becomeBidder"
 ];
 URLCheck["client"]=[
     "/users/profile/password",
@@ -20,9 +23,8 @@ URLCheck["client"]=[
 
 
 
-module.exports = (req, res, next) => {
+module.exports =async  (req, res, next) => {
     try {
-
         const token = req.headers.authorization.split(" ")[1];
         const decodedToken = jwt.verify(token, 'secret_key');
         if(URLCheck[decodedToken.cid].includes(req.originalUrl)==false){
@@ -30,11 +32,10 @@ module.exports = (req, res, next) => {
                 message: 'Auth failed'
             });
         }
-        req.userData = decodedToken;
 
+        req.userData=decodedToken
         next();
     }catch(error) {
-        console.log(error)
         return res.status(401).send({
             message: 'Auth failed'
         });

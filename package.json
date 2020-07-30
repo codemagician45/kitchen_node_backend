@@ -30,6 +30,7 @@
     "stream-chat": "^1.14.0"
   },
   "devDependencies": {
+    "gaxios": "^3.0.4",
     "jsonwebtoken": "^8.5.1",
     "passport-google-oauth20": "^2.0.0"
   },

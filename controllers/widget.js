@@ -1,3 +1,5 @@
+const {request} = require('gaxios');
+
 const multer  = require('../uploaded_files/multer_document');
 var express = require('express');
 var widgetRouter = express.Router();
@@ -26,7 +28,7 @@ function randomStringGenerator(length) {
 
 widgetRouter.post("/offer",multer.upload.array("files[]"),async function (req,res) {
     let userSpecs;
-
+        console.log(req.body.offer)
     req.body.offer= JSON.parse(req.body.offer)
 
     let password = randomStringGenerator(10)
@@ -36,26 +38,17 @@ widgetRouter.post("/offer",multer.upload.array("files[]"),async function (req,re
         }
     })
     if(!user_data) {
-        await user.create({
-            email: req.body.offer.specs.user.email,
-            password: md5(password),
-            type: "client"
-        }).then(newUser=>{
-            userSpecs =newUser.dataValues
-        }).catch(err => {
-            res.send({
-                success: false,
-                reason: err.name
-            })
+        console.log("user is not exist")
+        let pass=randomStringGenerator(10)
+        let responsed = await request({
+            url: 'http://localhost:3100/register',
+            method: 'POST',
+            data: {
+                email:req.body.offer.specs.user.email,
+                password:pass
+            }
         })
-
-        await profile.create({
-            users_id : userSpecs.id
-        }).catch(err=>{
-            console.log(err)
-        })
-
-
+        userSpecs=responsed.data.user
     }else{
         userSpecs = user_data
     }
@@ -63,10 +56,9 @@ widgetRouter.post("/offer",multer.upload.array("files[]"),async function (req,re
     let ts=Date.now();
     req.body.offer.specs.creation_time = Math.floor(ts/1000);
     delete req.body.offer.specs.user
-//    req.body.offer.specs.files = "[\"eklenecek\",\"eklenecek2\"]"
     req.body.offer.specs.userid= userSpecs.id
     req.body.offer.specs.status= "concept"
-
+    req.body.offer.specs.type = req.body.offer.type
     offers.create(
         req.body.offer.specs
     ).then(newOffer=>{

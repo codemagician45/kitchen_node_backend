@@ -50,6 +50,14 @@ const model = sequelize.define(
             type : Sequelize.STRING,
             allowNull: true
         },
+        status: {
+            type : Sequelize.STRING,
+            allowNull: false
+        },
+        attend_id: {
+            type : Sequelize.INTEGER,
+            allowNull: true
+        },
         answer_one: {
             type : Sequelize.STRING,
             allowNull: true

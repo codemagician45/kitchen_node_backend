@@ -70,11 +70,11 @@ companyRouter.post(
   auth,
   multer.upload.single("photo"),
   function (req, res) {
-    let updateValues = req.body;
-    updateValues = {
-      ...updateValues,
-      photo: "images/"+req.file.filename + "." + mimeTypeToExtension[req.file.mimetype],
-    };
+    let updateValues = JSON.parse(req.body.user);
+    console.log(updateValues)
+    updateValues.photo = "images/"+req.file.filename + "." + mimeTypeToExtension[req.file.mimetype],
+
+    console.log(updateValues)
       CompanyProfiles
       .update(updateValues, { where: { users_id: req.userData.muuid } })
       .then((result) => {

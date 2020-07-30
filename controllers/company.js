@@ -73,9 +73,9 @@ companyRouter.post(
     let updateValues = req.body;
     updateValues = {
       ...updateValues,
-      photo: req.file.filename + "." + mimeTypeToExtension[req.file.mimetype],
+      photo: "images/"+req.file.filename + "." + mimeTypeToExtension[req.file.mimetype],
     };
-    profiles
+      CompanyProfiles
       .update(updateValues, { where: { users_id: req.userData.muuid } })
       .then((result) => {
         let success = false;

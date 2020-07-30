@@ -7,18 +7,25 @@ URLCheck["admin"]=[
     "/admin/dashboard/companies",
     "/admin/dashboard/users",
     "/admin/offers",
-    "/admin/dashboard/adminTestLoginAuth"
+    "/admin/dashboard/adminTestLoginAuth",
+    "/users/profiles",
+    "/companies/profiles",
+
 ];
 URLCheck["company"]=[
     "/companies/profile/password",
     "/companies/profile/upload",
     "/companies/pay",
     "/companies/offers",
-    "/companies/becomeBidder"
+    "/companies/becomeBidder",
+    "/users/profiles",
+    "/companies/profiles"
 ];
 URLCheck["client"]=[
     "/users/profile/password",
     "/users/profile/upload",
+    "/companies/profiles",
+    "/users/profiles",
     "/users/offers"];
 
 

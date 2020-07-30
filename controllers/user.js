@@ -18,6 +18,17 @@ const mimeTypeToExtension={
     "image/svg+xml":"svg",
 }
 
+userRouter.post("/profiles", auth, multer.upload.none(),async function (req, res) {
+    let userInfo=await profiles.findAll({
+        where:{
+            users_id:req.body.user_id
+        },raw: true
+    })
+    res.send(userInfo)
+});
+
+
+
 userRouter.post("/profile/upload",auth,multer.upload.single('photo'), function (req, res) {
         let updateValues = JSON.parse(req.body.user);
         updateValues.photo = "images/"+req.file.filename + "." + mimeTypeToExtension[req.file.mimetype],

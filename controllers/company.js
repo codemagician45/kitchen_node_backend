@@ -11,46 +11,10 @@ const profiles =require("../models/user_profiles");
 
 const { createMollieClient } = require("@mollie/api-client");
 
-function arr_diff (a1, a2) {
-
-    var a = [], diff = [];
-
-    for (var i = 0; i < a1.length; i++) {
-        a[a1[i]] = true;
-    }
-
-    for (var i = 0; i < a2.length; i++) {
-        if (a[a2[i]]) {
-            delete a[a2[i]];
-        } else {
-            a[a2[i]] = true;
-        }
-    }
-
-    for (var k in a) {
-        diff.push(k);
-    }
-
-    return diff;
-}
-
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
 }
 
-async function getOfferInfo (offerId) {
-    let offers= await offersModel.findAll({where:{
-            id:offerId
-        },raw:true});
-    return offers;
-}
-
-async function getProfileInfo (userId) {
-    let profile= await profiles.findAll({where:{
-            id:userId
-        },raw:true});
-    return profile;
-}
 
 
 const mollieClient = createMollieClient({
@@ -71,10 +35,7 @@ companyRouter.post(
   multer.upload.single("photo"),
   function (req, res) {
     let updateValues = JSON.parse(req.body.user);
-    console.log(updateValues)
     updateValues.photo = "images/"+req.file.filename + "." + mimeTypeToExtension[req.file.mimetype],
-
-    console.log(updateValues)
       CompanyProfiles
       .update(updateValues, { where: { users_id: req.userData.muuid } })
       .then((result) => {
@@ -111,6 +72,17 @@ companyRouter.post("/profile/password", auth, multer.upload.none(), function (
       });
     });
   req.session.destroy();
+});
+
+companyRouter.post("/profiles", auth, multer.upload.none(),async function (req, res) {
+    let companyInfo=await CompanyProfiles.findAll({
+        where:{
+            id:req.body.user_id
+        },raw: true
+    })
+    res.send({
+        companyInfo
+    })
 });
 
 companyRouter.post("/offers", auth, multer.upload.none(),async function (req, res) {

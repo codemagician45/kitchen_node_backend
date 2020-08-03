@@ -49,6 +49,7 @@ app.use("/admin/offers", adminOfferController);
 app.use("/users", userController);
 app.use("/widget", widgetController);
 app.use("/companies", companyController);
+app.use(express.static(__dirname + '/images'));
 
 const client = new OAuth2Client(google_credentials.web.client_id);
 

@@ -98,9 +98,7 @@ companyRouter.post("/profiles", auth, multer.upload.none(),async function (req, 
             users_id:req.body.user_id
         },raw: true
     })
-    res.send({
-        companyInfo
-    })
+    res.send(companyInfo)
 });
 
 

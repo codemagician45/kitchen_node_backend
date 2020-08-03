@@ -80,6 +80,11 @@ userRouter.post("/profile/password",auth,multer.upload.none(),function (req,res)
 
 
 userRouter.post("/offers",auth,multer.upload.none(),async function (req, res) {
+    let offers=await offersModel.findAll({where:{
+            userid:req.userData.muuid
+        },raw:true});
+    res.send(offers)
+    /*
     let offers= await offersModel.findAll({where:{
             status: "active"
         },raw:true});
@@ -130,6 +135,8 @@ userRouter.post("/offers",auth,multer.upload.none(),async function (req, res) {
         "done" : doneOffers
     }
     res.send(offer)
+
+     */
 })
 
 module.exports = userRouter;

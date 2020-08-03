@@ -30,7 +30,7 @@ userRouter.post("/profiles", auth, multer.upload.none(),async function (req, res
 
 
 userRouter.post("/profile/upload_photo",auth,multer.upload.single('photo'), function (req, res) {
-        let profilesPhoto = "images/"+req.file.filename + "." + mimeTypeToExtension[req.file.mimetype];
+        let profilesPhoto = req.file.filename;
         console.log(req.userData.muuid,profilesPhoto)
             profiles.update({photo:profilesPhoto}, { where: { users_id: req.userData.muuid } })
                 .then((result) => {

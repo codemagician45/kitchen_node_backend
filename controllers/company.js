@@ -34,7 +34,7 @@ companyRouter.post(
   auth,
   multer.upload.single("photo"),
   function (req, res) {
-    let profilesPhoto = "images/"+req.file.filename + "." + mimeTypeToExtension[req.file.mimetype];
+    let profilesPhoto = req.file.filename;
       CompanyProfiles.update({photo:profilesPhoto}, { where: { users_id: req.userData.muuid } })
       .then((result) => {
         let success = false;

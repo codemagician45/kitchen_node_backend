@@ -32,11 +32,11 @@ adminOffer.post("/",auth,multer.upload.none(),async function (req, res) {
     console.log(offerWithProfiles)
 
     offerWithProfiles.filter(offer=>{
-        if(offer.type=="concept"){
+        if(offer.status=="concept"){
             conceptOffer.push(offer)
-        }else if(offer.type=="active"){
+        }else if(offer.status=="active"){
             activeOffer.push(offer)
-        }else if(offer.type=="done"){
+        }else if(offer.status=="done"){
             doneOffer.push(offer)
         }
     })

@@ -30,14 +30,12 @@ const mimeTypeToExtension = {
 };
 
 companyRouter.post(
-  "/profile/upload",
+  "/profile/upload_photo",
   auth,
   multer.upload.single("photo"),
   function (req, res) {
-    let updateValues = JSON.parse(req.body.user);
-    updateValues.photo = "images/"+req.file.filename + "." + mimeTypeToExtension[req.file.mimetype],
-      CompanyProfiles
-      .update(updateValues, { where: { users_id: req.userData.muuid } })
+    let profilesPhoto = "images/"+req.file.filename + "." + mimeTypeToExtension[req.file.mimetype];
+      CompanyProfiles.update({photo:profilesPhoto}, { where: { users_id: req.userData.muuid } })
       .then((result) => {
         let success = false;
         if (result == 1) {
@@ -49,6 +47,26 @@ companyRouter.post(
       });
   }
 );
+
+
+
+companyRouter.post("/profile/upload_data",auth,multer.upload.none(), function (req, res) {
+    let updateValues = JSON.parse(req.body.user);
+    CompanyProfiles.update(updateValues, { where: { users_id: req.userData.muuid } })
+        .then((result) => {
+            let success = false;
+            if (result == 1) {
+                success = true;
+            }
+            res.send({
+                success: success,
+            });
+        });
+})
+
+
+
+
 
 companyRouter.post("/profile/password", auth, multer.upload.none(), function (
   req,
@@ -77,13 +95,14 @@ companyRouter.post("/profile/password", auth, multer.upload.none(), function (
 companyRouter.post("/profiles", auth, multer.upload.none(),async function (req, res) {
     let companyInfo=await CompanyProfiles.findAll({
         where:{
-            id:req.body.user_id
+            users_id:req.body.user_id
         },raw: true
     })
     res.send({
         companyInfo
     })
 });
+
 
 companyRouter.post("/offers", auth, multer.upload.none(),async function (req, res) {
 

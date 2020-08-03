@@ -29,10 +29,10 @@ userRouter.post("/profiles", auth, multer.upload.none(),async function (req, res
 
 
 
-userRouter.post("/profile/upload",auth,multer.upload.single('photo'), function (req, res) {
-        let updateValues = JSON.parse(req.body.user);
-        updateValues.photo = "images/"+req.file.filename + "." + mimeTypeToExtension[req.file.mimetype],
-            profiles.update(updateValues, { where: { users_id: req.userData.muuid } })
+userRouter.post("/profile/upload_photo",auth,multer.upload.single('photo'), function (req, res) {
+        let profilesPhoto = "images/"+req.file.filename + "." + mimeTypeToExtension[req.file.mimetype];
+        console.log(req.userData.muuid,profilesPhoto)
+            profiles.update({photo:profilesPhoto}, { where: { users_id: req.userData.muuid } })
                 .then((result) => {
                     let success = false;
                     if (result == 1) {
@@ -42,6 +42,22 @@ userRouter.post("/profile/upload",auth,multer.upload.single('photo'), function (
                         success: success,
                     });
                 });
+});
+
+userRouter.post("/profile/upload_data",auth,multer.upload.none(), function (req, res) {
+    let updateValues = JSON.parse(req.body.user);
+
+
+    profiles.update(updateValues, { where: { users_id: req.userData.muuid } })
+            .then((result) => {
+                let success = false;
+                if (result == 1) {
+                    success = true;
+                }
+                res.send({
+                    success: success,
+                });
+            });
 })
 
 

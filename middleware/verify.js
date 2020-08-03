@@ -19,14 +19,18 @@ URLCheck["company"]=[
     "/companies/offers",
     "/companies/becomeBidder",
     "/users/profiles",
-    "/companies/profiles"
+    "/companies/profiles",
+    "/companies/profile/upload_photo",
+    "/companies/profile/upload_data"
 ];
 URLCheck["client"]=[
     "/users/profile/password",
     "/users/profile/upload",
     "/companies/profiles",
     "/users/profiles",
-    "/users/offers"];
+    "/users/offers",
+    "/users/profile/upload_photo",
+    "/users/profile/upload_data"];
 
 
 

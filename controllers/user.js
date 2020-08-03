@@ -81,8 +81,15 @@ userRouter.post("/profile/password",auth,multer.upload.none(),function (req,res)
 
 userRouter.post("/offers",auth,multer.upload.none(),async function (req, res) {
     let offers= await offersModel.findAll({where:{
-            type: "active"
+            status: "active"
         },raw:true});
+    let conceptOffers= await offersModel.findAll({where:{
+            status: "concept",userid:req.userData.muuid
+        },raw:true});
+    let doneOffers= await offersModel.findAll({where:{
+            status: "done",userid:req.userData.muuid
+        },raw:true});
+
     let biddingFees= await biddingFeesModel.findAll({where:{
             user_id:req.userData.muuid
         },raw:true});
@@ -115,9 +122,12 @@ userRouter.post("/offers",auth,multer.upload.none(),async function (req, res) {
     offerWithProfiles.filter(offer=>{
         activeOffer.push(offer)
     })
-
+    ////get data form "concept only ofr this user "
+    ////get data "done" for this user
     let offer = {
-        "active" : activeOffer
+        "active" : activeOffer,
+        "concept" : conceptOffers,
+        "done" : doneOffers
     }
     res.send(offer)
 })

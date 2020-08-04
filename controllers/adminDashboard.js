@@ -53,7 +53,7 @@ adminDashboard.post("/counts",auth,multer.upload.none(),async function (req, res
     let offersConceptCount =await offersModel.count({raw: true,where:{status:"concept"}})
     let offersActiveCount =await offersModel.count({raw: true,where:{status:"active"}})
     let offersDoneCount =await offersModel.count({raw: true,where:{status:"done"}})
-    let ReactionPartOne =await offersModel.count({raw: true,where:{status:"concept"}})
+    let ReactionPartOne = offersConceptCount
     let ReactionPartTwo =await biddingFees.count({raw: true})
     let lastOffers =await offersModel.findAll({raw: true,limit:3});
     res.send({

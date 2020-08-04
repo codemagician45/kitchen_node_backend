@@ -10,6 +10,7 @@ URLCheck["admin"]=[
     "/admin/dashboard/adminTestLoginAuth",
     "/users/profiles",
     "/companies/profiles",
+    "/users/getOffer"
 
 ];
 URLCheck["company"]=[
@@ -21,7 +22,8 @@ URLCheck["company"]=[
     "/users/profiles",
     "/companies/profiles",
     "/companies/profile/upload_photo",
-    "/companies/profile/upload_data"
+    "/companies/profile/upload_data",
+    "/users/getOffer"
 ];
 URLCheck["client"]=[
     "/users/profile/password",

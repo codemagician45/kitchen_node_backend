@@ -105,9 +105,7 @@ companyRouter.post("/profiles", auth, multer.upload.none(),async function (req, 
 companyRouter.post("/offers", auth, multer.upload.none(),async function (req, res) {
 
     let allOffers = await offersModel.findAll({
-        where:{
-            status:"new"
-        },raw: true
+        raw: true
     })
     let biddedOffers = await biddingFees.findAll({
             where: {
@@ -128,7 +126,7 @@ companyRouter.post("/offers", auth, multer.upload.none(),async function (req, re
     });
     let MeineOffers =  await offersModel.findAll({
         where: {
-            status:"new",
+            status:"active",
             attend_id: req.userData.muuid
         }, raw: true
     })

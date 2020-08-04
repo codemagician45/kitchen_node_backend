@@ -6,9 +6,10 @@ var md5 = require("md5");
 var jwt = require("jsonwebtoken");
 const { OAuth2Client } = require("google-auth-library");
 const fetch = require("node-fetch");
-
+var path = require('path');
+var fs = require('fs');
 const StreamChat = require('stream-chat').StreamChat;
-
+var archiver = require('archiver');
 
 var app = express();
 app.use(bodyParser.json()); // support json encoded bodies
@@ -50,6 +51,7 @@ app.use("/users", userController);
 app.use("/widget", widgetController);
 app.use("/companies", companyController);
 app.use(express.static(__dirname + '/images'));
+app.use(express.static(__dirname + '/uploaded_files'));
 
 const client = new OAuth2Client(google_credentials.web.client_id);
 
@@ -327,6 +329,14 @@ app.listen(3100, function () {
           });
   });
 
+  app.get("/download",upload.none(),function(req,res){
+      var filePath = path.join(__dirname, req.body.file);
+      var stat = fs.statSync(filePath);
+        console.log(filePath)
+        console.log(stat)
+      res.download(filePath);
+
+  })
   app.post("/logout", upload.none(), function (req, res) {
     req.session.destroy();
     res.end();

@@ -79,6 +79,16 @@ userRouter.post("/profile/password",auth,multer.upload.none(),function (req,res)
 })
 
 
+
+userRouter.post("/GetOffer",auth,multer.upload.none(),async function (req, res) {
+    let offers = await offersModel.findAll({
+        where: {
+            id: req.body.id
+        }, raw: true
+    });
+    res.send(offers)
+})
+
 userRouter.post("/offers",auth,multer.upload.none(),async function (req, res) {
     let offers=await offersModel.findAll({where:{
             userid:req.userData.muuid

@@ -225,7 +225,6 @@ app.listen(3100, function () {
         }
       });
   });
-  /* WIP */
   app.get("/mailSent", upload.none(), function (req, res) {
     let mailResult = mailSender.mailSend({
       from: "asimmurat17@gmail.com",

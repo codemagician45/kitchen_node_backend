@@ -30,7 +30,9 @@ URLCheck["client"]=[
     "/users/profiles",
     "/users/offers",
     "/users/profile/upload_photo",
-    "/users/profile/upload_data"];
+    "/users/profile/upload_data",
+    "/users/getOffer"
+];
 
 
 

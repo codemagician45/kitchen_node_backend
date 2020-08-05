@@ -63,11 +63,11 @@ widgetRouter.post("/offer",multer.upload.array("files[]"),async function (req,re
         req.body.offer.specs
     ).then(newOffer=>{
 
-        let folder_name = "./uploaded_files/"+newOffer.dataValues.id+"_offer"
+        let folder_name = "uploaded_files/"+newOffer.dataValues.id+"_offer"
         fs.mkdirSync(folder_name)
         fs.mkdirSync(folder_name+"/old")
         fs.mkdirSync(folder_name+"/new")
-
+        fs.mkdirSync(folder_name+"/bids")
         let filePaths = [];
         for (let i=0;i<req.files.length;i++) {
             let extension = path.extname(req.files[i].originalname)

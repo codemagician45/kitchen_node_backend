@@ -93,7 +93,10 @@ userRouter.post("/offers",auth,multer.upload.none(),async function (req, res) {
     let offers=await offersModel.findAll({where:{
             userid:req.userData.muuid
         },raw:true});
-    res.send(offers)
+    let bids=await biddingFeesModel.findAll({raw:true});
+    let bidArray=[][]
+    bids.filter(bid=>bidArray[bid.offer_id].push=bid)
+    console.log(bidArray)
     /*
     let offers= await offersModel.findAll({where:{
             status: "active"

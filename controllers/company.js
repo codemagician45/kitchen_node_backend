@@ -1,13 +1,14 @@
 const multer = require("../images/multer");
 var express = require("express");
 var companyRouter = express.Router();
-var passport = require("../passport2");
 var auth = require("../middleware/verify");
 const CompanyProfiles = require("../models/companies_profiles");
 const user = require("../models/users");
 const biddingFees = require("../models/bidding_fees");
 const offersModel =require("../models/offers");
-const profiles =require("../models/user_profiles");
+var fs = require('fs');
+var md5 = require('md5');
+var path = require('path')
 
 const { createMollieClient } = require("@mollie/api-client");
 
@@ -156,18 +157,36 @@ companyRouter.post("/offers", auth, multer.upload.none(),async function (req, re
 });
 
 
-companyRouter.post("/becomeBidder", auth, multer.upload.none(), function (req, res) {
+companyRouter.post("/becomeBidder", auth, multer.upload.array("files[]"), function (req, res) {
+    let biddingFeeDetail;
+    req.body.bid = JSON.parse(req.body.bid)
     biddingFees.create({
-        "offer_id":req.body.offer_id,
+        "offer_id":req.body.bid.offer_id,
         "user_id":req.userData.muuid,
-        "mollie_id":getRandomInt(100000000)
+        "mollie_id":getRandomInt(100000000),
+        "bid":req.body.bid.bid,
+        "note":req.body.bid.note
     }).then((result)=>{
         let success=false;
         if (result.id>0) {
             success = true;
+            biddingFeeDetail=result
         }
+        let folder_name = "uploaded_files/"+req.body.bid.offer_id+"_offer"
+        let bidNumber=biddingFeeDetail.id
+    fs.mkdirSync(folder_name+"/bids/"+bidNumber)
+    let filePaths = [];
+    for (let i=0;i<req.files.length;i++) {
+        let extension = path.extname(req.files[i].originalname)
+        fs.renameSync(req.files[i].path, folder_name+"/bids/"+bidNumber+"/"+req.files[i].filename+"."+extension)
+        filePaths.push(folder_name+"/bids/"+bidNumber+"/"+req.files[i].filename+"."+extension)
+    }
+        biddingFees.update({files:JSON.stringify(filePaths)},{where : {
+                    id : result.id
+                }})
 
-        res.send({
+
+            res.send({
             success: success ,
             biddingDetail : result,
         });

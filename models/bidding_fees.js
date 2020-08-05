@@ -25,6 +25,21 @@ const model = sequelize.define(
             defaultValue:null,
             allowNull: true
         },
+        files:{
+            type: Sequelize.STRING,
+            defaultValue:null,
+            allowNull: true
+        },
+        bid:{
+            type: Sequelize.FLOAT,
+            defaultValue:null,
+            allowNull: true
+        },
+        note:{
+            type: Sequelize.STRING,
+            defaultValue:null,
+            allowNull: true
+        },
     }, {
         underscored: true,
         underscoredAll: true,

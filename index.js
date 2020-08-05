@@ -9,7 +9,6 @@ const fetch = require("node-fetch");
 var path = require('path');
 var fs = require('fs');
 const StreamChat = require('stream-chat').StreamChat;
-var archiver = require('archiver');
 
 var app = express();
 app.use(bodyParser.json()); // support json encoded bodies

@@ -208,7 +208,7 @@ companyRouter.post("/pay", auth, multer.upload.none(), async function (req, res)
     redirectUrl: "https://feestvanverbinding.nl/companies/offers",
     // redirectUrl: "http://localhost:3005/companies/offers",
     // webhookUrl: "https://acc27f51ead7.ngrok.io/companies/hook",
-    webhookUrl: "https://feestvanverbinding.nl/companies/hook",
+    webhookUrl: "https://feestvanverbinding.nl/companies/hook/"+req.userData.muuid+"/"+req.body.offer_id,
   });
   console.log(payment.id);
   res.send(payment.getCheckoutUrl());
@@ -227,13 +227,19 @@ companyRouter.post("/check_pay", async function (req, res) {
     });
 });
 */
-companyRouter.post("/hook", async function (req, res) {
+companyRouter.post("/hook/:user_id/:offer_id",auth, async function (req, res) {
 
     console.log(req.body);
     mollieClient.payments
     .get(req.body.id)
     .then((payment) => {
-      console.log(payment)
+        if(payment.isPaid()) {
+            biddingFees.create({
+                "offer_id":req.params.offer_id,
+                "user_id":req.userData.muuid,
+                "mollie_id":payment
+            }).then()
+        }
     })
     .catch((error) => {
       // Handle the error

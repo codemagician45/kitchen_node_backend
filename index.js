@@ -246,11 +246,11 @@ app.listen(3100, function () {
         type: "client",
       })
       .then( async (newUser)=> {
-        const token = client.createToken(newUser.email.toString());
+        const token = client.createToken(newUser..toString());
         await client.setUser(
             {
               id: newUser.id.toString(),
-              name: req.body.email,
+              name: req.body.email,id
             },
             token,
         ).then((userData)=>{

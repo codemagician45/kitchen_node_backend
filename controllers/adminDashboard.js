@@ -78,8 +78,8 @@ adminDashboard.post("/changeToCompany",auth,multer.upload.none(),async function 
     delete userProfileInfo.updatedAt
     delete userProfileInfo.id
     await companies_profiles.create(userProfileInfo).then(async ()=>{
-        await profiles.destroy({where:{users_id:req.body.userId}})
-        await user.update({type:"company"},{where:{id:req.body.userId}})
+        await profiles.destroy({where:{users_id:req.body.user_id}})
+        await user.update({type:"company"},{where:{id:req.body.user_id}})
     }).then(
         res.send({
             success: true,
@@ -97,8 +97,8 @@ adminDashboard.post("/changeToClient",auth,multer.upload.none(),async function (
     delete companyProfileInfo.updatedAt
     delete companyProfileInfo.id
     await profiles.create(companyProfileInfo).then(async ()=>{
-        await companies_profiles.destroy({where:{users_id:req.body.userId}})
-        await user.update({type:"client"},{where:{id:req.body.userId}})
+        await companies_profiles.destroy({where:{users_id:req.body.user_id}})
+        await user.update({type:"client"},{where:{id:req.body.user_id}})
     }).then(
         res.send({
             success: true,

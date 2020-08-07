@@ -233,7 +233,6 @@ companyRouter.post("/hook", async function (req, res) {
     mollieClient.payments
     .get(req.body.id)
     .then((payment) => {
-      // E.g. check if the payment.isPaid()
       console.log(payment.isPaid())
     })
     .catch((error) => {

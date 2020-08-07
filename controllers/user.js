@@ -85,6 +85,28 @@ userRouter.post("/getOffer",auth,multer.upload.none(),async function (req, res) 
             id: req.body.id
         }, raw: true
     });
+    let bids = await biddingFeesModel.findAll({
+        where:{
+            offer_id:req.body.id
+        }
+    })
+    console.log(bids)
+    let companiesProfile = await companies_profiles.findAll()
+
+    offers.forEach(offer=>{
+        offer.bid=[]
+        bids.forEach(bid=>{
+            companiesProfile.forEach(companyProfile=>{
+                if(bid.user_id==companyProfile.users_id){
+                    bid={...bid,
+                        company_name: companyProfile.name,
+                        photo: companyProfile.photo,
+                    }
+                }
+            })
+        offer.bid.push(bid)
+        })
+    })
     res.send(offers)
 })
 

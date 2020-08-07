@@ -26,6 +26,10 @@ const model = sequelize.define(
             type : Sequelize.STRING,
             allowNull: true
         },
+        old_files: {
+            type : Sequelize.STRING,
+            allowNull: true
+        },
         street: {
             type : Sequelize.STRING,
             allowNull: true

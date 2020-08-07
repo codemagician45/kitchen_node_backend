@@ -211,6 +211,7 @@ companyRouter.post("/pay", auth, multer.upload.none(), async function (req, res)
     webhookUrl: "https://feestvanverbinding.nl/companies/hook/"+req.userData.muuid+"/"+req.body.offer_id,
   });
   console.log(payment.id);
+    console.log("pay worked");
   res.send(payment.getCheckoutUrl());
 });
 /*
@@ -229,6 +230,7 @@ companyRouter.post("/check_pay", async function (req, res) {
 */
 companyRouter.post("/hook/:user_id/:offer_id",auth, async function (req, res) {
 
+    console.log("hook worked");
     console.log(req.body);
     mollieClient.payments
     .get(req.body.id)

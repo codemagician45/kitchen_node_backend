@@ -159,18 +159,20 @@ companyRouter.post("/offers", auth, multer.upload.none(),async function (req, re
 companyRouter.post("/becomeBidder", auth, multer.upload.array("files[]"), function (req, res) {
     let biddingFeeDetail;
     req.body.bid = JSON.parse(req.body.bid)
-    biddingFees.create({
-        "offer_id":req.body.bid.offer_id,
-        "user_id":req.userData.muuid,
-        "mollie_id":getRandomInt(100000000),
+    biddingFees.update({
         "bid":req.body.bid.bid,
         "note":req.body.bid.note
-    }).then((result)=>{
-        let success=false;
-        if (result.id>0) {
-            success = true;
-            biddingFeeDetail=result
-        }
+    },{where: {
+            "offer_id":req.body.bid.offer_id,
+            "user_id":req.userData.muuid,
+        }}).then(async ()=>{
+        let biddingFeeDetail=await biddingFees.findAll({
+            where:{
+                offer_id:req.body.bid.offer_id,
+                user_id:req.userData.muuid,
+            },raw: true
+        })
+        biddingFeeDetail=biddingFeeDetail[0]
         let folder_name = "uploaded_files/"+req.body.bid.offer_id+"_offer"
         let bidNumber=biddingFeeDetail.id
     fs.mkdirSync(folder_name+"/bids/"+bidNumber)
@@ -181,13 +183,13 @@ companyRouter.post("/becomeBidder", auth, multer.upload.array("files[]"), functi
         filePaths.push(folder_name+"/bids/"+bidNumber+"/"+req.files[i].filename+"."+extension)
     }
         biddingFees.update({files:JSON.stringify(filePaths)},{where : {
-                    id : result.id
+                    id : biddingFeeDetail.id
                 }})
 
 
             res.send({
-            success: success ,
-            biddingDetail : result,
+            success: true ,
+            biddingDetail : biddingFeeDetail,
         });
     })
 
@@ -198,7 +200,7 @@ companyRouter.post("/becomeBidder", auth, multer.upload.array("files[]"), functi
 
 
 companyRouter.post("/pay", auth, multer.upload.none(), async function (req, res) {
-    let offer_id=13;
+
   let amount = req.body.amount.toFixed(2).toString();
   const payment = await mollieClient.payments.create({
     amount: {
@@ -209,7 +211,7 @@ companyRouter.post("/pay", auth, multer.upload.none(), async function (req, res)
     redirectUrl: "https://feestvanverbinding.nl/companies/offers",
     // redirectUrl: "http://localhost:3005/companies/offers",
     // webhookUrl: "https://acc27f51ead7.ngrok.io/companies/hook",
-    webhookUrl: " http://feestvanverbinding.nl/api/companies/hook/"+req.userData.muuid+"/"+offer_id,
+    webhookUrl: " http://feestvanverbinding.nl/api/companies/hook/"+req.userData.muuid+"/"+req.body.offer_id,
   });
     console.log(payment);
   console.log(payment.id);

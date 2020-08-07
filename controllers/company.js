@@ -232,8 +232,7 @@ companyRouter.post("/check_pay", async function (req, res) {
 */
 companyRouter.post("/hook/:user_id/:offer_id", async function (req, res) {
 
-    console.log("hook worked");
-    console.log(req.body);
+    console.log("body",req.body);
     mollieClient.payments
     .get(req.body.id)
     .then((payment) => {
@@ -241,7 +240,7 @@ companyRouter.post("/hook/:user_id/:offer_id", async function (req, res) {
             biddingFees.create({
                 "offer_id":req.params.offer_id,
                 "user_id":req.params.user_id,
-                "mollie_id":payment
+                "mollie_id":payment.id
             }).then()
         }
     })

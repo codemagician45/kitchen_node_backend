@@ -30,7 +30,6 @@ widgetRouter.post("/offer",multer.upload.array("files[]"),async function (req,re
     let userSpecs;
         console.log(req.body.offer)
     req.body.offer= JSON.parse(req.body.offer)
-
     let password = randomStringGenerator(10)
     let user_data= await user.findOne({
         where : {

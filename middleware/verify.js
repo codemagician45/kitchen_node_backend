@@ -6,11 +6,16 @@ URLCheck["admin"]=[
     "/admin/dashboard/counts",
     "/admin/dashboard/companies",
     "/admin/dashboard/users",
+    "/admin/dashboard/updateStatusOffer",
+    "/admin/dashboard/makeActive",
+    "/admin/dashboard/changeToCompany",
+    "/admin/dashboard/changeToClient",
     "/admin/offers",
     "/admin/dashboard/adminTestLoginAuth",
     "/users/profiles",
     "/companies/profiles",
-    "/users/getOffer"
+    "/users/getOffer",
+    "/users/offers",
 
 ];
 URLCheck["company"]=[

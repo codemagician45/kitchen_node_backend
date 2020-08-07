@@ -90,7 +90,6 @@ companyRouter.post("/profile/password", auth, multer.upload.none(), function (
         success: success,
       });
     });
-  req.session.destroy();
 });
 
 companyRouter.post("/profiles", auth, multer.upload.none(),async function (req, res) {

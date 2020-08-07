@@ -16,7 +16,7 @@ const model = sequelize.define(
             allowNull:false
         },
         mollie_id: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.STRING,
             defaultValue:null,
             allowNull:false
         },

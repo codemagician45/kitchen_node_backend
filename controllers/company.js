@@ -210,6 +210,7 @@ companyRouter.post("/pay", auth, multer.upload.none(), async function (req, res)
     // webhookUrl: "https://acc27f51ead7.ngrok.io/companies/hook",
     webhookUrl: "https://feestvanverbinding.nl/companies/hook/"+req.userData.muuid+"/"+req.body.offer_id,
   });
+    console.log(payment);
   console.log(payment.id);
     console.log("pay worked");
   res.send(payment.getCheckoutUrl());

@@ -230,7 +230,7 @@ companyRouter.post("/check_pay", async function (req, res) {
     });
 });
 */
-companyRouter.get("/hook/:user_id/:offer_id", async function (req, res) {
+companyRouter.post("/hook/:user_id/:offer_id", async function (req, res) {
 
     console.log("hook worked");
     console.log(req.body);

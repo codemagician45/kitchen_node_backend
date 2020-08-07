@@ -93,16 +93,26 @@ userRouter.post("/offers",auth,multer.upload.none(),async function (req, res) {
             userid:req.userData.muuid
         },raw:true});
     let bids=await biddingFeesModel.findAll({raw:true});
-    let offerWithBid;
+    let offerWithBid=[];
     offers.filter(offer=>{
-        offerWithBid={...offerWithBid,[offer.id]:offer}
-        offerWithBid[offer.id].bids=[];
-    }
-    )
-    bids.filter(bid=>(offerWithBid[bid.offer_id].bids).push(bid))
-
+        offer.bid=[];
+        offerWithBid.push(offer)
+    })
+    bids.forEach(bid=>{
+        offerWithBid.forEach(owb=>{
+            if(owb.id==bid.offer_id){
+                owb.bid.push(bid)
+            }
+        })
+    })
     res.send(offerWithBid)
 
+    /*
+    let offerWithBidsArray;
+    offerWithBid.filter(owb=>{
+        offerWithBidsArray.push(owb);
+    })
+*/
 })
 
 module.exports = userRouter;

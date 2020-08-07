@@ -238,7 +238,7 @@ companyRouter.post("/hook/:user_id/:offer_id", async function (req, res) {
         if(payment.isPaid()) {
             biddingFees.create({
                 "offer_id":req.params.offer_id,
-                "user_id":req.userData.muuid,
+                "user_id":req.params.user_id,
                 "mollie_id":payment
             }).then()
         }

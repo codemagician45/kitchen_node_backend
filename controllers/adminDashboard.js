@@ -162,7 +162,7 @@ adminDashboard.post("/uploadDocuments",auth,multer.upload.array("files[]"),async
         }
     })
     filePaths = JSON.parse(offerInfo[0].files);
-    console.log(filePaths[0])
+
     for (let i=0;i<req.files.length;i++) {
         fs.renameSync(req.files[i].path, folder_name+"/new/"+req.files[i].filename)
         filePaths.push(folder_name+"/new/"+req.files[i].filename)

@@ -69,12 +69,11 @@ widgetRouter.post("/offer",multer.upload.array("files[]"),async function (req,re
         fs.mkdirSync(folder_name+"/bids")
         let filePaths = [];
         for (let i=0;i<req.files.length;i++) {
-            let extension = path.extname(req.files[i].originalname)
-            fs.renameSync(req.files[i].path, folder_name+"/old/"+req.files[i].filename+"."+extension)
-            filePaths.push(folder_name+"/old/"+req.files[i].filename+extension)
+            fs.renameSync(req.files[i].path, folder_name+"/old/"+req.files[i].filename)
+            filePaths.push(folder_name+"/old/"+req.files[i].filename)
         }
 
-            offers.update({files:JSON.stringify(filePaths)},{where : {
+            offers.update({old_files:JSON.stringify(filePaths)},{where : {
                 id : newOffer.dataValues.id
                 }})
 

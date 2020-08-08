@@ -16,7 +16,8 @@ URLCheck["admin"]=[
     "/companies/profiles",
     "/users/getOffer",
     "/users/offers",
-
+    "/admin/dashboard/getDocuments",
+    "/admin/dashboard/uploadDocuments",
 ];
 URLCheck["company"]=[
     "/companies/profile/password",

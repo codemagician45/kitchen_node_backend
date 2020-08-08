@@ -12,8 +12,6 @@ const offersModel =require("../models/offers");
 var path = require('path');
 var fs = require('fs');
 
-var md5 = require('md5');
-
 const mimeTypeToExtension={
     "image/jpeg":"jpg",
     "image/png":"png",
@@ -142,6 +140,40 @@ adminDashboard.post("/makeActive",auth,multer.upload.array("files[]"),async func
 
 })
 
+
+adminDashboard.post("/getDocuments",auth,multer.upload.none(),async function (req,res) {
+    let offerInfo=await offersModel.findAll({
+        where:{
+            id:req.body.offer_id
+        }
+    })
+    res.send({
+        offerInfo
+    })
+})
+
+adminDashboard.post("/uploadDocuments",auth,multer.upload.array("files[]"),async function (req,res) {
+
+    let offer_id=JSON.parse(req.body.offer).offer_id
+    let folder_name = "uploaded_files/"+offer_id+"_offer"
+    let filePaths = [];
+    let offerInfo=await offersModel.findAll({
+        where:{
+            id:offer_id
+        }
+    })
+    filePaths = JSON.parse(offerInfo[0].files);
+    console.log(filePaths[0])
+    for (let i=0;i<req.files.length;i++) {
+        fs.renameSync(req.files[i].path, folder_name+"/new/"+req.files[i].filename)
+        filePaths.push(folder_name+"/new/"+req.files[i].filename)
+    }
+    await offersModel.update({files:JSON.stringify(filePaths)},{where : {
+            id : offer_id
+        }})
+
+
+})
 
 
 module.exports = adminDashboard;

@@ -330,8 +330,6 @@ app.listen(3100, function () {
 
   app.post("/download",upload.none(),function(req,res){
       var filePath = path.join(__dirname, req.body.file);
-      console.log(mime.getType(filePath));
-      console.log(path.extname())
       res.download(filePath);
   })
 

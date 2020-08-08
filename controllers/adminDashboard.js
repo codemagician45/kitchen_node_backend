@@ -122,9 +122,8 @@ adminDashboard.post("/makeActive",auth,multer.upload.array("files[]"),async func
     let folder_name = "uploaded_files/"+req.body.offerId+"_offer"
     let filePaths = [];
     for (let i=0;i<req.files.length;i++) {
-        let extension = path.extname(req.files[i].originalname)
-        fs.renameSync(req.files[i].path, folder_name+"/new/"+req.files[i].filename+"."+extension)
-        filePaths.push(folder_name+"/new/"+req.files[i].filename+extension)
+        fs.renameSync(req.files[i].path, folder_name+"/new/"+req.files[i].filename+path.extname(req.files[i].originalname))
+        filePaths.push(folder_name+"/new/"+req.files[i].filename+path.extname(req.files[i].originalname))
     }
     offersModel.update({files:JSON.stringify(filePaths),status:"active"},{where : {
             id : req.body.offerId

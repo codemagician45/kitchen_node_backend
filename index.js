@@ -331,13 +331,14 @@ app.listen(3100, function () {
   app.get("/download",upload.none(),function(req,res){
       var filePath = path.join(__dirname, req.body.file);
       var stat = fs.statSync(filePath);
-        console.log(filePath)
-        console.log(stat)
+      console.log(filePath)
+      console.log(stat)
       res.download(filePath);
-
   })
+
   app.post("/logout", upload.none(), function (req, res) {
     req.session.destroy();
     res.end();
   });
+
 });

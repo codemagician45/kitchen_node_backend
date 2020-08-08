@@ -176,8 +176,8 @@ companyRouter.post("/becomeBidder", auth, multer.upload.array("files[]"), functi
     let filePaths = [];
     for (let i=0;i<req.files.length;i++) {
         let extension = path.extname(req.files[i].originalname)
-        fs.renameSync(req.files[i].path, folder_name+"/bids/"+bidNumber+"/"+req.files[i].filename+"."+extension)
-        filePaths.push(folder_name+"/bids/"+bidNumber+"/"+req.files[i].filename+"."+extension)
+        fs.renameSync(req.files[i].path, folder_name+"/bids/"+bidNumber+"/"+req.files[i].filename)
+        filePaths.push(folder_name+"/bids/"+bidNumber+"/"+req.files[i].filename)
     }
         biddingFees.update({files:JSON.stringify(filePaths)},{where : {
                     id : biddingFeeDetail.id

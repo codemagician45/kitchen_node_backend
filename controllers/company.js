@@ -118,18 +118,15 @@ companyRouter.post("/offers", auth, multer.upload.none(),async function (req, re
     let biddedOffersList = biddedOffers.map(function (offer) {
         return offer.offer_id
     })
+    biddedOffers.forEach(biddedOffer=>{
+        biddedOffer.offerDetail=allOffers.find( offer => offer.id == biddedOffer.offer_id)
+    })
     let difference = allOffersList.filter(x => !biddedOffersList.includes(x));
     let notBiddedOffers = await offersModel.findAll({
         where:{
             id:difference
         }
     });
-    let MeineOffers =  await offersModel.findAll({
-        where: {
-            status:"active",
-            attend_id: req.userData.muuid
-        }, raw: true
-    })
     let AttendedOffers =  await offersModel.findAll({
         where: {
             status:"attended",
@@ -142,7 +139,7 @@ companyRouter.post("/offers", auth, multer.upload.none(),async function (req, re
             attend_id: req.userData.muuid
         }, raw: true
     })
-    res.send({"new":notBiddedOffers,"meineOffers":MeineOffers,"attendedOffers":AttendedOffers,"doneOffers":DoneOffers});
+    res.send({"new":notBiddedOffers,"meineOffers":biddedOffers,"attendedOffers":AttendedOffers,"doneOffers":DoneOffers});
 
 /*
     let offersFinalWithUserInfo = await offersFinal.filter(async offersFinal=>{

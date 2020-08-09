@@ -137,4 +137,19 @@ userRouter.post("/offers",auth,multer.upload.none(),async function (req, res) {
 */
 })
 
+userRouter.post("/attendOffer",auth,multer.upload.none(),async function (req, res) {
+    await offersModel.update(
+        {status:"attend",attend_id:req.body.company_id },
+        { where:
+                { userid: req.userData.muuid,id:req.body.offer_id } }).then((result) => {
+            let success = false;
+            if (result == 1) {
+                success = true;
+            }
+            res.send({
+                success: success,
+            });
+        })
+})
+
 module.exports = userRouter;

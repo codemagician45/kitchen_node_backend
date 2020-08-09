@@ -52,12 +52,13 @@ adminDashboard.post("/counts",auth,multer.upload.none(),async function (req, res
     let companiesCount =await user.count({raw: true,where:{type:"company"}})
     let offersConceptCount =await offersModel.count({raw: true,where:{status:"concept"}})
     let offersActiveCount =await offersModel.count({raw: true,where:{status:"active"}})
+    let offersAttendCount =await offersModel.count({raw: true,where:{status:"attend"}})
     let offersDoneCount =await offersModel.count({raw: true,where:{status:"done"}})
     let ReactionPartOne = offersConceptCount
     let ReactionPartTwo =await biddingFees.count({raw: true})
     let lastOffers =await offersModel.findAll({raw: true,limit:3});
     res.send({
-        offersCount : offersActiveCount+offersConceptCount+offersDoneCount,
+        offersCount : offersActiveCount+offersConceptCount+offersDoneCount+offersAttendCount,
         companiesCount : companiesCount,
         clientCount : clientCount,
         lastOffers : lastOffers,

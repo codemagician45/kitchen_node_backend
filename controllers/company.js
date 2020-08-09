@@ -124,7 +124,8 @@ companyRouter.post("/offers", auth, multer.upload.none(),async function (req, re
     let difference = allOffersList.filter(x => !biddedOffersList.includes(x));
     let notBiddedOffers = await offersModel.findAll({
         where:{
-            id:difference
+            id:difference,
+            status:"active"
         }
     });
     let AttendedOffers =  await offersModel.findAll({

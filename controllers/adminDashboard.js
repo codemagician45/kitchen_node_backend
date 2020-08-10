@@ -9,6 +9,7 @@ const profiles =require("../models/user_profiles");
 const companies_profiles =require("../models/companies_profiles");
 const user =require("../models/users");
 const offersModel =require("../models/offers");
+const CompanyProfileSettings = require("../models/company_profile_settings");
 var path = require('path');
 var fs = require('fs');
 
@@ -79,6 +80,7 @@ adminDashboard.post("/changeToCompany",auth,multer.upload.none(),async function 
     await companies_profiles.create(userProfileInfo).then(async ()=>{
         await profiles.destroy({where:{users_id:req.body.user_id}})
         await user.update({type:"company"},{where:{id:req.body.user_id}})
+        await CompanyProfileSettings.create({company_id:req.userData.muuid})
     }).then(
         res.send({
             success: true,
@@ -167,8 +169,8 @@ adminDashboard.post("/uploadDocuments",auth,multer.upload.array("files[]"),async
         filePaths=[]
     }
     for (let i=0;i<req.files.length;i++) {
-        fs.renameSync(req.files[i].path, folder_name+"/new/"+req.files[i].filename)
-        filePaths.push(folder_name+"/new/"+req.files[i].filename)
+        fs.renameSync(req.files[i].path, folder_name+"/new/"+req.files[i].filename+path.extname(req.files[i].originalname))
+        filePaths.push(folder_name+"/new/"+req.files[i].filename+path.extname(req.files[i].originalname))
     }
     await offersModel.update({files:JSON.stringify(filePaths)},{where : {
             id : offer_id

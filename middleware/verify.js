@@ -29,7 +29,8 @@ URLCheck["company"]=[
     "/companies/profiles",
     "/companies/profile/upload_photo",
     "/companies/profile/upload_data",
-    "/users/getOffer"
+    "/users/getOffer",
+    "/companies/profile/settings"
 ];
 URLCheck["client"]=[
     "/users/profile/password",
@@ -40,7 +41,8 @@ URLCheck["client"]=[
     "/users/profile/upload_photo",
     "/users/profile/upload_data",
     "/users/getOffer",
-    "/users/attendOffer"
+    "/users/attendOffer",
+    "/users/offers/getBidInfo",
 ];
 
 

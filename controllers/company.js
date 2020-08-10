@@ -3,6 +3,7 @@ var express = require("express");
 var companyRouter = express.Router();
 var auth = require("../middleware/verify");
 const CompanyProfiles = require("../models/companies_profiles");
+const CompanyProfileSettings = require("../models/company_profile_settings");
 const user = require("../models/users");
 const biddingFees = require("../models/bidding_fees");
 const offersModel =require("../models/offers");
@@ -55,6 +56,27 @@ companyRouter.post(
 );
 
 
+companyRouter.post("/profile/settings", auth, multer.upload.none(),async function (req, res) {
+    await CompanyProfileSettings.update({company_id:req.userData.muuid,
+        website:req.body.website,
+        services:req.body.services,
+        about_company:req.body.about_company,
+        opening_hours:req.body.opening_hours,
+        reviews:req.body.reviews,
+    },{where:{company_id:req.userData.muuid}}).then((settings)=>{
+        if(settings.id!=null)
+        {res.send({
+            success:true
+        })
+        }else{
+            res.send({
+                success:false
+            })
+        }
+    })
+
+    }
+);
 
 companyRouter.post("/profile/upload_data",auth,multer.upload.none(), function (req, res) {
     let updateValues = JSON.parse(req.body.user);
@@ -153,16 +175,6 @@ companyRouter.post("/offers", auth, multer.upload.none(),async function (req, re
         }, raw: true
     })
     res.send({"new":notBiddedOffers,"meineOffers":biddedWithPrice,"biddedNotPriceOffers":biddedNoPrice,"attendedOffers":AttendedOffers,"doneOffers":DoneOffers});
-
-/*
-    let offersFinalWithUserInfo = await offersFinal.filter(async offersFinal=>{
-        offersFinal.user=getProfileInfo(offersFinalWithUserInfo.userId);
-        delete offersFinal.user_id;
-        return biddingFee;
-    })
-*/
-
-
 });
 
 

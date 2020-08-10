@@ -10,6 +10,7 @@ const biddingFeesModel = require("../models/bidding_fees");
 var md5 = require('md5');
 var auth = require('../middleware/verify');
 const companies_profiles =require("../models/companies_profiles");
+const CompanyProfileSettings = require("../models/company_profile_settings");
 const offersModel =require("../models/offers");
 
 const mimeTypeToExtension={
@@ -109,6 +110,22 @@ userRouter.post("/getOffer",auth,multer.upload.none(),async function (req, res) 
     })
     res.send(offers)
 })
+
+
+userRouter.post("/offers/getBidInfo",auth,multer.upload.none(),async function (req, res) {
+    await biddingFeesModel.findAll({where:{id:req.body.bidId}}).then(async bid=>{
+        bid=bid[0]
+        let settings=await CompanyProfileSettings.findAll({where:{company_id:bid.user_id}});
+        let profile=await companies_profiles.findAll({where:{users_id:bid.user_id}});
+        let offer=await offersModel.findAll({where:{id:bid.offer_id}});
+        bid.settings=settings[0];
+        bid.profile=profile[0];
+        bid.offer=offer[0];
+        res.send(bid)
+    })
+})
+
+
 
 userRouter.post("/offers",auth,multer.upload.none(),async function (req, res) {
     let offers=await offersModel.findAll({where:{

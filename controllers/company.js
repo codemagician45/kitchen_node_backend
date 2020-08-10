@@ -12,6 +12,11 @@ var path = require('path')
 
 const { createMollieClient } = require("@mollie/api-client");
 
+
+Array.prototype.diff = function(a) {
+    return this.filter(function(i) {return a.indexOf(i) < 0;});
+};
+
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
 }
@@ -118,8 +123,15 @@ companyRouter.post("/offers", auth, multer.upload.none(),async function (req, re
     let biddedOffersList = biddedOffers.map(function (offer) {
         return offer.offer_id
     })
+    let biddedWithPrice=[];
+    let biddedNoPrice=[];
     biddedOffers.forEach(biddedOffer=>{
         biddedOffer.offerDetail=allOffers.find( offer => offer.id == biddedOffer.offer_id)
+        if(biddedOffer.bid==null){
+            biddedNoPrice.push(biddedOffer)
+        }else{
+            biddedWithPrice.push(biddedOffer)
+        }
     })
     let difference = allOffersList.filter(x => !biddedOffersList.includes(x));
     let notBiddedOffers = await offersModel.findAll({
@@ -140,7 +152,7 @@ companyRouter.post("/offers", auth, multer.upload.none(),async function (req, re
             attend_id: req.userData.muuid
         }, raw: true
     })
-    res.send({"new":notBiddedOffers,"meineOffers":biddedOffers,"attendedOffers":AttendedOffers,"doneOffers":DoneOffers});
+    res.send({"new":notBiddedOffers,"meineOffers":biddedWithPrice,"biddedNotPriceOffers":biddedNoPrice,"attendedOffers":AttendedOffers,"doneOffers":DoneOffers});
 
 /*
     let offersFinalWithUserInfo = await offersFinal.filter(async offersFinal=>{

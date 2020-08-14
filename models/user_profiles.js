@@ -40,6 +40,11 @@ const model = sequelize.define(
             defaultValue:null,
             allowNull: true
         },
+        birth_date:{
+            type: Sequelize.STRING,
+            defaultValue:null,
+            allowNull: true
+        },
         street:{
             type: Sequelize.STRING,
             defaultValue:null,

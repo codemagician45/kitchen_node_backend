@@ -76,6 +76,7 @@ adminDashboard.post("/changeToCompany",auth,multer.upload.none(),async function 
     delete userProfileInfo.first_name
     delete userProfileInfo.createdAt
     delete userProfileInfo.updatedAt
+    delete userProfileInfo.birth_date
     delete userProfileInfo.id
     await companies_profiles.create(userProfileInfo).then(async ()=>{
         await profiles.destroy({where:{users_id:req.body.user_id}})

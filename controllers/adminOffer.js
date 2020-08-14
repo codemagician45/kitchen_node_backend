@@ -12,12 +12,17 @@ const offersModel =require("../models/offers");
 adminOffer.post("/",auth,multer.upload.none(),async function (req, res) {
     let offers= await offersModel.findAll({raw:true});
     let profiles= await profileModel.findAll({raw:true});
+    let userLoginInfo = await user.findAll({raw:true});
     let conceptOffer = [];
     let activeOffer = [];
     let doneOffer = [];
     let userProfiles = [];
 
+    let userLoginInfoArray=[];
+    userLoginInfo.filter(loginInfo=>{userLoginInfoArray[loginInfo.id]=loginInfo.email})
+
     profiles.filter(profile=>{
+        profile.email=userLoginInfoArray[profile.users_id];
         userProfiles[profile.users_id]=profile
     })
 

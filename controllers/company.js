@@ -55,7 +55,13 @@ companyRouter.post(
   }
 );
 
-
+companyRouter.post("/profile/getSettings",auth,multer.upload.none(),async function (req,res){
+    await CompanyProfileSettings.findAll({where:{company_id:req.body.company_id}}).then((settings)=>{
+        res.send(
+            settings
+        )
+    })
+})
 companyRouter.post("/profile/settings", auth, multer.upload.none(),async function (req, res) {
     await CompanyProfileSettings.findAll({where:{company_id:req.userData.muuid}}).then(async (setting_new) => {
         if(setting_new.length==0) {

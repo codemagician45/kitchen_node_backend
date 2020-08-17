@@ -71,14 +71,22 @@ userRouter.post("/profile/password",auth,multer.upload.none(),function (req,res)
         if(result==1){
             success=true
         }
-
         res.send({
             "success":success
         })
     });
 })
 
-
+userRouter.post("/dashboard",auth,multer.upload.none(),async function (req,res) {
+    await offersModel.findAll({
+        where:{userid:req.userData.muuid}
+    }).then((offers)=>{
+        res.send({
+            success: true,
+            offers: offers
+        })
+    })
+})
 
 userRouter.post("/getOffer",auth,multer.upload.none(),async function (req, res) {
     let offers = await offersModel.findAll({

@@ -16,6 +16,7 @@ URLCheck["admin"]=[
     "/companies/profiles",
     "/users/getOffer",
     "/users/offers",
+    "/companies/profile/getSettings",
     "/admin/dashboard/getDocuments",
     "/admin/dashboard/uploadDocuments",
 ];
@@ -27,6 +28,7 @@ URLCheck["company"]=[
     "/companies/becomeBidder",
     "/users/profiles",
     "/companies/profiles",
+    "/companies/profile/getSettings",
     "/companies/profile/upload_photo",
     "/companies/profile/upload_data",
     "/users/getOffer",
@@ -34,9 +36,11 @@ URLCheck["company"]=[
 ];
 URLCheck["client"]=[
     "/users/profile/password",
+    "/companies/profile/getSettings",
     "/users/profile/upload",
     "/companies/profiles",
     "/users/profiles",
+    "/users/dashboard",
     "/users/offers",
     "/users/profile/upload_photo",
     "/users/profile/upload_data",

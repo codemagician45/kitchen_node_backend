@@ -59,7 +59,8 @@ adminDashboard.post("/counts",auth,multer.upload.none(),async function (req, res
     let ReactionPartTwo =await biddingFees.count({raw: true})
     let lastOffers =await offersModel.findAll({raw: true,limit:3});
     res.send({
-        offersCount : offersActiveCount+offersConceptCount+offersDoneCount+offersAttendCount,
+        //offersCount : offersActiveCount+offersConceptCount+offersDoneCount+offersAttendCount,
+        offersCount : offersConceptCount,
         companiesCount : companiesCount,
         clientCount : clientCount,
         lastOffers : lastOffers,

@@ -57,20 +57,34 @@ companyRouter.post(
 
 
 companyRouter.post("/profile/settings", auth, multer.upload.none(),async function (req, res) {
-    await CompanyProfileSettings.update({company_id:req.userData.muuid,
-        website:req.body.website,
-        services:req.body.services,
-        about_company:req.body.about_company,
-        opening_hours:req.body.opening_hours,
-        reviews:req.body.reviews,
-    },{where:{company_id:req.userData.muuid}}).then((settings)=>{
-        if(settings.id!=null)
-        {res.send({
-            success:true
-        })
+    await CompanyProfileSettings.findAll({where:{company_id:req.userData.muuid}}).then(async (setting_new) => {
+        if(setting_new.length==0) {
+            await CompanyProfileSettings.create({
+                company_id: req.userData.muuid,
+                website: req.body.website,
+                services: req.body.services,
+                about_company: req.body.about_company,
+                opening_hours: req.body.opening_hours,
+                reviews: req.body.reviews,
+            }, {where: {company_id: req.userData.muuid}}).then(async (settings) => {
+               if(settings.dataValues.id){
+                   res.send({
+                       success:true
+                   })
+               }
+            })
         }else{
-            res.send({
-                success:false
+            await CompanyProfileSettings.update({company_id:req.userData.muuid,
+                website:req.body.website,
+                services:req.body.services,
+                about_company:req.body.about_company,
+                opening_hours:req.body.opening_hours,
+                reviews:req.body.reviews,
+            },{where:{company_id:req.userData.muuid}}).then(async (settings)=>{
+                res.send({
+                    success:true
+                })
+
             })
         }
     })

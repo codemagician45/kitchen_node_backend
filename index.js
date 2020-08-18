@@ -13,8 +13,7 @@ const StreamChat = require('stream-chat').StreamChat;
 var app = express();
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true }));
-const multer = require("multer");
-const upload = multer();
+const multer = require("./images/multer");
 
 const cors = require("cors");
 app.use(cors());
@@ -60,7 +59,7 @@ app.listen(3100, function () {
     res.send("<h1>Merhabe</h1> Express");
   });
 
-  app.post("/login", upload.none(), async function (req, res) {
+  app.post("/login", multer.upload.none(), async function (req, res) {
     let userInfo = await user.findOne({
       where: { email: req.body.email, password: md5(req.body.password) },
     });
@@ -89,7 +88,7 @@ app.listen(3100, function () {
     }
   });
 
-  app.post("/googlelogin", upload.none(), async (req, res) => {
+  app.post("/googlelogin", multer.upload.none(), async (req, res) => {
     const { tokenId } = req.body;
     client
       .verifyIdToken({
@@ -161,7 +160,7 @@ app.listen(3100, function () {
       });
   });
 
-  app.post("/facebooklogin", upload.none(), async function (request, response) {
+  app.post("/facebooklogin", multer.upload.none(), async function (request, response) {
     const { userID, accessToken } = request.body;
 
     let urlGraphFacebook = `https://graph.facebook.com/v2.11/${userID}/?fields=id,name,email&access_token=${accessToken}`;
@@ -226,7 +225,7 @@ app.listen(3100, function () {
         }
       });
   });
-  app.get("/mailSent", upload.none(), function (req, res) {
+  app.get("/mailSent", multer.upload.none(), function (req, res) {
     let mailResult = mailSender.mailSend({
       from: "asimmurat17@gmail.com",
       to: "asimmurat17@gmail.com",
@@ -237,7 +236,7 @@ app.listen(3100, function () {
   });
   /* WIP */
 
-  app.post("/register", upload.none(),async function (req, res) {
+  app.post("/register", multer.upload.none(),async function (req, res) {
     console.log(req.body);
     const client = new StreamChat('kkzn98xebx9t', '7npmqra3csw3enwakqg2teek6tr9uyfzx2ex7zaw5txagcj7rs7rduc9z7n2cs74');
     user.create({
@@ -280,9 +279,10 @@ app.listen(3100, function () {
           });
   });
 
-  app.post("/companies_register", upload.none(), function (req, res) {
+  app.post("/companies_register", multer.upload.single("photo"), function (req, res) {
+      let profilesPhoto = req.file.filename;
       const client = new StreamChat('kkzn98xebx9t', '7npmqra3csw3enwakqg2teek6tr9uyfzx2ex7zaw5txagcj7rs7rduc9z7n2cs74');
-
+      req.body.companyInfo=JSON.parse(req.body.companyInfo)
       user.create({
               email: req.body.email,
               password: md5(req.body.password),
@@ -303,12 +303,14 @@ app.listen(3100, function () {
                   if(result==1){
                       success=true
                   }
-              });
-                req.body.companyInfo.users_id=newUser.id
-              company_profile.create(req.body.companyInfo);
-              res.send({
-                  success: true,
-                  user: newUser,
+                  req.body.companyInfo.photo=profilesPhoto
+                  req.body.companyInfo.users_id=userData.me.id
+                  company_profile.create(req.body.companyInfo);
+                  res.send({
+                      success: true,
+                      user: newUser,
+                  });
+
               });
               })
           }).catch((err) => {
@@ -326,12 +328,12 @@ app.listen(3100, function () {
           });
   });
 
-  app.post("/download",upload.none(),function(req,res){
+  app.post("/download",multer.upload.none(),function(req,res){
       var filePath = path.join(__dirname, req.body.file);
       res.download(filePath);
   })
 
-  app.post("/logout", upload.none(), function (req, res) {
+  app.post("/logout", multer.upload.none(), function (req, res) {
     req.session.destroy();
     res.end();
   });

@@ -304,10 +304,8 @@ app.listen(3100, function () {
                       success=true
                   }
               });
-
-              company_profile.create({
-                  users_id: newUser.id,
-              });
+                req.body.companyInfo.users_id=newUser.id
+              company_profile.create(req.body.companyInfo);
               res.send({
                   success: true,
                   user: newUser,

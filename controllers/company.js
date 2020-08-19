@@ -175,6 +175,9 @@ companyRouter.post("/offers", auth, multer.upload.none(),async function (req, re
             biddedWithPrice.push(biddedOffer)
         }
     })
+    biddedOffers.filter(async (offer)=>{
+        offer.reactionCount=await biddingFees.count({where:{offer_id:offer.id}})
+    });
     let difference = allOffersList.filter(x => !biddedOffersList.includes(x));
     let notBiddedOffers = await offersModel.findAll({
         where:{
@@ -182,18 +185,27 @@ companyRouter.post("/offers", auth, multer.upload.none(),async function (req, re
             status:"active"
         }
     });
+    notBiddedOffers.filter(async (offer)=>{
+        offer.reactionCount=await biddingFees.count({where:{offer_id:offer.id}})
+    });
     let AttendedOffers =  await offersModel.findAll({
         where: {
             status:"attended",
             attend_id: req.userData.muuid
         }, raw: true
     })
+    AttendedOffers.filter(async (offer)=>{
+        offer.reactionCount=await biddingFees.count({where:{offer_id:offer.id}})
+    });
     let DoneOffers =  await offersModel.findAll({
         where: {
             status:"done",
             attend_id: req.userData.muuid
         }, raw: true
     })
+    DoneOffers.filter(async (offer)=>{
+        offer.reactionCount=await biddingFees.count({where:{offer_id:offer.id}})
+    });
     res.send({"new":notBiddedOffers,"meineOffers":biddedWithPrice,"biddedNotPriceOffers":biddedNoPrice,"attendedOffers":AttendedOffers,"doneOffers":DoneOffers});
 });
 

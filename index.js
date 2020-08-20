@@ -64,6 +64,7 @@ app.listen(3100, function () {
       where: { email: req.body.email, password: md5(req.body.password) },
     });
     if (userInfo) {
+        await user.update({"last_login":Date.now(),"previous_login":userInfo.last_login},{where:{id:userInfo.id}})
       const token = jwt.sign(
         {
           muuid: userInfo.id,

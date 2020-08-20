@@ -15,6 +15,7 @@ adminOffer.post("/",auth,multer.upload.none(),async function (req, res) {
     let offers= await offersModel.findAll({raw:true});
     let profiles= await profileModel.findAll({raw:true});
     let userLoginInfo = await user.findAll({raw:true});
+    let adminUser=await user.findAll({where:{id:req.userData.muuid}})
     let bids = await biddingFees.findAll({raw:true});
     let conceptOffer = [];
     let activeOffer = [];
@@ -41,6 +42,13 @@ adminOffer.post("/",auth,multer.upload.none(),async function (req, res) {
     })
     console.log(bidArray)
     offers.filter((offer)=>{
+        let isNew=false
+        if(Number(adminUser[0].previous_login)<Number(offer.creation_time)*1000){
+            isNew=true
+        }
+        console.log(adminUser[0].previous_login)
+        console.log(offer.creation_time*1000)
+        offer.isNew=isNew
         offer.reactionCount = bidArray[offer.id]
         offerWithProfiles.push({...offer,profile:userProfiles[offer.userid]})
     })

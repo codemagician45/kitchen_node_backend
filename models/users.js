@@ -32,8 +32,14 @@ const model = sequelize.define(
             allowNull: true,
             unique: true
         },
-
-
+        last_login:{
+            type:Sequelize.STRING,
+            allowNull: true
+        },
+        previous_login:{
+            type:Sequelize.STRING,
+            allowNull: true
+        }
     }, {
         defaultScope : {
             attributes : {

@@ -78,14 +78,21 @@ userRouter.post("/profile/password",auth,multer.upload.none(),function (req,res)
 })
 
 userRouter.post("/dashboard",auth,multer.upload.none(),async function (req,res) {
-    await offersModel.findAll({
-        where:{userid:req.userData.muuid}
-    }).then((offers)=>{
-        res.send({
-            success: true,
-            offers: offers
-        })
+    let bidList= await biddingFeesModel.findAll();
+
+    bidList.filter(async (bid)=>{
+        bid.company =await  companies_profiles.findAll({where:{users_id:bid.user_id}})
+        console.log(bid)
     })
+    let offers = await offersModel.findAll({
+        where:{userid:req.userData.muuid}
+    })
+    res.send({
+        success: true,
+        offers: offers,
+        bids:bidList
+    })
+
 })
 
 userRouter.post("/getOffer",auth,multer.upload.none(),async function (req, res) {

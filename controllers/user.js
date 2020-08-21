@@ -86,7 +86,11 @@ userRouter.post("/dashboard",auth,multer.upload.none(),async function (req,res) 
         ],
         limit:2
     })
-
+    last2Offers.filter(async offer=>{
+        offer.reactionCount = await biddingFeesModel.count({where:{offer_id:offer.id}})
+        console.log(offer)
+        return offer
+    })
     let offersCount = await offersModel.count(
         {
             where: {

@@ -149,6 +149,20 @@ companyRouter.post("/profiles", auth, multer.upload.none(),async function (req, 
 });
 
 companyRouter.post("/dashboard", auth, multer.upload.none(),async function (req, res) {
+    let allBids = await biddingFees.findAll()
+    let offersBids=[];
+    allBids.filter(async bid=>{
+        if(!offersBids[bid.offer_id]){
+            console.log("yok",bid.offer_id,offersBids[bid.offer_id])
+            offersBids[bid.offer_id]=[]
+        }else{
+            console.log("var",bid.offer_id,offersBids[bid.offer_id])
+        }
+
+        offersBids[bid.offer_id].push(bid.id)
+        //offersBids[bid.offer_id]=offersBids[bid.offer_id].length+1
+    })
+    console.log(offersBids)
     let activeOffersCount = await offersModel.count({
         where:{status:"active"}
     })
@@ -165,18 +179,27 @@ companyRouter.post("/dashboard", auth, multer.upload.none(),async function (req,
     let attendedOfferCount = await offersModel.count({
         where:{status:"attended",attend_id:req.userData.muuid}
     })
-    let last2Offer = await offersModel.findAll({
+    let last2Offers = await offersModel.findAll({
         where:{status:"active"},
         order: [
             ['id', 'DESC']
         ],
         limit:2
     })
+    let offersLastList=[];
+    last2Offers.filter (async  offer=>{
+        offer.reactionCount = offersBids[offer.id].length
+        if(offer.reactionCount==null){
+            offer.reactionCount=0
+        }
+        offersLastList.push(offer)
+    })
+
     res.send({
         activeOffersCount:activeOffersCount,
         paidBidOfferCount:paidBidOfferArray.length,
         attendedOfferCount:attendedOfferCount,
-        last2Offer:last2Offer
+        last2Offer:offersLastList
     })
 
 });

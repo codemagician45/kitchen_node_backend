@@ -4,6 +4,7 @@ var userRouter = express.Router();
 var passport = require("../passport2");
 var auth = require('../middleware/verify');
 var sequelize = require("sequelize")
+
 const profiles =require("../models/user_profiles");
 const user =require("../models/users");
 const biddingFeesModel = require("../models/bidding_fees");
@@ -78,19 +79,55 @@ userRouter.post("/profile/password",auth,multer.upload.none(),function (req,res)
 })
 
 userRouter.post("/dashboard",auth,multer.upload.none(),async function (req,res) {
-    let bidList= await biddingFeesModel.findAll();
-
-    bidList.filter(async (bid)=>{
-        bid.company =await  companies_profiles.findAll({where:{users_id:bid.user_id}})
-        console.log(bid)
+    let last2Offers = await offersModel.findAll({
+        where:{userid:req.userData.muuid},
+        order: [
+            ['id', 'DESC']
+        ],
+        limit:2
     })
-    let offers = await offersModel.findAll({
-        where:{userid:req.userData.muuid}
+
+    let offersCount = await offersModel.count(
+        {
+            where: {
+                userid: req.userData.muuid,
+                status: {
+                    [sequelize.Op.not]: ["done"]
+                }
+            }
+        }
+    )
+    let activeOffers = await offersModel.findAll({
+        attributes:["id"],
+        where:{
+            userid: req.userData.muuid,
+            status:"active"
+        }
+    })
+    let attendedOffersCount = await offersModel.count({
+        where:{
+            userid: req.userData.muuid,
+            status:"attended"
+        }
+    })
+    let activeOffersIdArray=[];
+    activeOffers.forEach (offer=>{
+        activeOffersIdArray.push(offer.id)
+    })
+    let totalActiveOfferBidsCount = await biddingFeesModel.count({
+        where:{
+            offer_id:activeOffersIdArray,
+            bid:{
+                [sequelize.Op.ne]: null
+            }
+        }
     })
     res.send({
         success: true,
-        offers: offers,
-        bids:bidList
+        offersCount:offersCount,
+        totalActiveOfferBidsCount:totalActiveOfferBidsCount,
+        attendedOffersCount:attendedOffersCount,
+        lastOffers:last2Offers
     })
 
 })

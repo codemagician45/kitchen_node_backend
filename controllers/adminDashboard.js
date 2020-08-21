@@ -49,6 +49,7 @@ adminDashboard.post("/companies",auth,multer.upload.none(),async function (req, 
 })
 
 adminDashboard.post("/counts",auth,multer.upload.none(),async function (req, res) {
+    let adminUser=await user.findAll({where:{id:req.userData.muuid}});
     let clientCount =await user.count({raw: true,where:{type:"client"}})
     let companiesCount =await user.count({raw: true,where:{type:"company"}})
     let offersConceptCount =await offersModel.count({raw: true,where:{status:"concept"}})
@@ -58,13 +59,47 @@ adminDashboard.post("/counts",auth,multer.upload.none(),async function (req, res
     let ReactionPartOne = offersConceptCount
     let ReactionPartTwo =await biddingFees.count({raw: true})
     let lastOffers =await offersModel.findAll({raw: true,limit:3});
+    /*
+     let isNew=false
+        if(Number(adminUser[0].previous_login)<Number(offer.creation_time)*1000){
+            isNew=true
+        }
+     */
+    let allClients= await user.findAll({where:{"type":"client"},raw:true});
+    let newClientsCounter=0;
+    allClients.filter(client=>{
+        let timestampCreationTime=new Date(client.createdAt).getTime();
+        if(Number(adminUser[0].previous_login)<timestampCreationTime){
+            newClientsCounter++;
+        }
+    })
+    let allCompanies= await user.findAll({where:{"type":"company"},raw:true});
+    let newCompaniesCounter=0;
+    allCompanies.filter(company=>{
+        let timestampCreationTime=new Date(company.createdAt).getTime();
+        if(Number(adminUser[0].previous_login)<timestampCreationTime){
+            newCompaniesCounter++;
+        }
+    })
+    let allOffers= await offersModel.findAll({raw:true});
+    let newOffersCounter=0;
+    allOffers.filter(offer=>{
+        let timestampCreationTime=new Date(offer.createdAt).getTime();
+        if(Number(adminUser[0].previous_login)<timestampCreationTime){
+            newOffersCounter++;
+        }
+    })
     res.send({
-        //offersCount : offersActiveCount+offersConceptCount+offersDoneCount+offersAttendCount,
         offersCount : offersConceptCount,
         companiesCount : companiesCount,
         clientCount : clientCount,
         lastOffers : lastOffers,
-        reactionCount: ReactionPartOne+ ReactionPartTwo
+        reactionCount: ReactionPartOne+ ReactionPartTwo,
+        notification:{
+            new_companies:newCompaniesCounter,
+            new_user:newClientsCounter,
+            new_offer:newOffersCounter,
+        }
     })
 })
 

@@ -7,7 +7,6 @@ exports.readAction = async (option) => {
         raw : true
     });
     users.filter(user => {
-        delete user.createdAt;
         delete user.updatedAt;
         return user;
     })

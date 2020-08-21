@@ -148,6 +148,39 @@ companyRouter.post("/profiles", auth, multer.upload.none(),async function (req, 
     res.send(companyInfo)
 });
 
+companyRouter.post("/dashboard", auth, multer.upload.none(),async function (req, res) {
+    let activeOffersCount = await offersModel.count({
+        where:{status:"active"}
+    })
+    let paidBidOffers = await biddingFees.findAll({
+        where:{user_id:req.userData.muuid},
+        attributes:["offer_id"]
+    })
+    let paidBidOfferArray=[];
+    paidBidOffers.forEach (bid=>{
+        if(!paidBidOfferArray.includes(bid.offer_id)){
+            paidBidOfferArray.push(bid.offer_id)
+        }
+    })
+    let attendedOfferCount = await offersModel.count({
+        where:{status:"attended",attend_id:req.userData.muuid}
+    })
+    let last2Offer = await offersModel.findAll({
+        where:{status:"active"},
+        order: [
+            ['id', 'DESC']
+        ],
+        limit:2
+    })
+    res.send({
+        activeOffersCount:activeOffersCount,
+        paidBidOfferArray:paidBidOfferArray,
+        attendedOfferCount:attendedOfferCount,
+        last2Offer:last2Offer
+    })
+
+});
+
 
 companyRouter.post("/offers", auth, multer.upload.none(),async function (req, res) {
 

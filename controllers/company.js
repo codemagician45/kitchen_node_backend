@@ -174,7 +174,7 @@ companyRouter.post("/dashboard", auth, multer.upload.none(),async function (req,
     })
     res.send({
         activeOffersCount:activeOffersCount,
-        paidBidOfferArray:paidBidOfferArray,
+        paidBidOfferCount:paidBidOfferArray.length,
         attendedOfferCount:attendedOfferCount,
         last2Offer:last2Offer
     })

@@ -33,26 +33,25 @@ adminOffer.post("/",auth,multer.upload.none(),async function (req, res) {
     let offerWithProfiles = [];
     let bidArray=[];
     bids.filter((bid)=>{
-        console.log(bid)
         if(bidArray[bid.offer_id]) {
             bidArray[bid.offer_id] += 1
         }else{
             bidArray[bid.offer_id] = 1
         }
     })
-    console.log(bidArray)
     offers.filter((offer)=>{
         let isNew=false
         if(Number(adminUser[0].previous_login)<Number(offer.creation_time)*1000){
             isNew=true
         }
-        console.log(adminUser[0].previous_login)
-        console.log(offer.creation_time*1000)
         offer.isNew=isNew
         offer.reactionCount = bidArray[offer.id]
         offerWithProfiles.push({...offer,profile:userProfiles[offer.userid]})
     })
     offerWithProfiles.filter(async (offer)=>{
+        if(offer.reactionCount==null){
+            offer.reactionCount=0
+        }
         if(offer.status=="concept"){
             conceptOffer.push(offer)
         }else if(offer.status=="active"){

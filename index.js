@@ -239,7 +239,7 @@ app.listen(3100, function () {
 
   app.post("/register", multer.upload.none(),async function (req, res) {
     console.log(req.body);
-    const client = new StreamChat('vgycazwc3qrf', '4keyfptk88dwz2wp67jj65xugn7xr9349hnsq5wecd3n33w8jpuy43xv2zz669cy');
+    const client = new StreamChat('kkkqp86hb87x', 'c3z8bw38hhtsr9a7yybzmew3qtubs4qf9gymvk84jnf4x4zm9a9h8hk7rz5dqnej');
     user.create({
         email: req.body.email,
         password: md5(req.body.password),

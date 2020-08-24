@@ -129,6 +129,7 @@ adminDashboard.post("/changeToClient",auth,multer.upload.none(),async function (
     let companyProfileInfo= await companies_profiles.findAll({where:{users_id:req.body.user_id},raw: true})
     let first_name=companyProfileInfo[0].name
     companyProfileInfo=companyProfileInfo[0]
+
     companyProfileInfo.first_name=first_name
     delete companyProfileInfo.name
     delete companyProfileInfo.createdAt

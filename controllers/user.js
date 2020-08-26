@@ -211,6 +211,8 @@ userRouter.post("/offers",auth,multer.upload.none(),async function (req, res) {
 })
 
 userRouter.post("/attendOffer",auth,multer.upload.none(),async function (req, res) {
+    console.log("body",req.body)
+    console.log("req.userData",req.userData)
     await offersModel.update(
         {status:"attend",attend_id:req.body.company_id },
         { where:

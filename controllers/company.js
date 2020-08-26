@@ -262,7 +262,11 @@ companyRouter.post("/offers", auth, multer.upload.none(),async function (req, re
     DoneOffers.filter(async (offer)=>{
         offer.reactionCount=await biddingFees.count({where:{offer_id:offer.id}})
     });
-    res.send({"new":notBiddedOffers,"meineOffers":biddedWithPrice,"biddedNotPriceOffers":biddedNoPrice,"attendedOffers":AttendedOffers,"doneOffers":DoneOffers});
+    res.send({"new":notBiddedOffers,
+        "meineOffers":biddedWithPrice,
+        "biddedNotPriceOffers":biddedNoPrice,
+        "attendedOffers":AttendedOffers,
+        "doneOffers":DoneOffers});
 });
 
 

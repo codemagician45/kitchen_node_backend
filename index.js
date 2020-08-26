@@ -273,6 +273,8 @@ app.listen(3100, function () {
                     html: "<html>This is completely html5 standarts <br> <h1>LiKe Header 1 </h1>" +
                         "<div style='margin:10px;border:1px solid red'>TEST</div></html>",
                 });
+                console.log(mailResult);
+                console.log("mail olayi bitti")
                 res.send({
                   success: true,
                   user: newUser,

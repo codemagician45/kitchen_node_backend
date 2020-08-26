@@ -56,7 +56,7 @@ adminOffer.post("/",auth,multer.upload.none(),async function (req, res) {
             conceptOffer.push(offer)
         }else if(offer.status=="active"){
             activeOffer.push(offer)
-        }else if(offer.status=="done"){
+        }else if(offer.status=="attend"){
             doneOffer.push(offer)
         }
     })

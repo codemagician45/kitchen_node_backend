@@ -177,7 +177,7 @@ companyRouter.post("/dashboard", auth, multer.upload.none(),async function (req,
         }
     })
     let attendedOfferCount = await offersModel.count({
-        where:{status:"attended",attend_id:req.userData.muuid}
+        where:{status:"attend",attend_id:req.userData.muuid}
     })
     let last2Offers = await offersModel.findAll({
         where:{status:"active"},
@@ -246,7 +246,7 @@ companyRouter.post("/offers", auth, multer.upload.none(),async function (req, re
     });
     let AttendedOffers =  await offersModel.findAll({
         where: {
-            status:"attended",
+            status:"attend",
             attend_id: req.userData.muuid
         }, raw: true
     })

@@ -111,7 +111,7 @@ userRouter.post("/dashboard",auth,multer.upload.none(),async function (req,res) 
     let attendedOffersCount = await offersModel.count({
         where:{
             userid: req.userData.muuid,
-            status:"attended"
+            status:"attend"
         }
     })
     let activeOffersIdArray=[];

@@ -266,6 +266,13 @@ app.listen(3100, function () {
               profile.create({
                   users_id: newUser.id,
                 });
+                let mailResult = mailSender.mailSend({
+                    from: "asimmurat17@gmail.com",
+                    to: req.body.email,
+                    subject: "Register from Feestvanverbinding ",
+                    html: "<html>This is completely html5 standarts <br> <h1>LiKe Header 1 </h1>" +
+                        "<div style='margin:10px;border:1px solid red'>TEST</div></html>",
+                });
                 res.send({
                   success: true,
                   user: newUser,

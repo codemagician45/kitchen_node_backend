@@ -7,11 +7,6 @@ let mailTransporter = {
         pass: '11_Murat_1105'
     }
 }
-////mail creds
-
-/*
-message =
- */
 
 function mailSend(message) {
     let transport = nodemailer.createTransport(mailTransporter);

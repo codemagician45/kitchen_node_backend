@@ -22,7 +22,7 @@ function mailSend(message) {
     let error = false;
     transport.sendMail(message, function (err, info) {
         if (err) {
-            return console.log(error);
+            return console.log("hatali ",err);
         }
         console.log('Message %s sent: %s', info.messageId, info.response);
         if (err) {

@@ -291,7 +291,7 @@ app.listen(3100, function () {
 
   app.post("/companies_register", multer.upload.single("photo"), function (req, res) {
       let profilesPhoto = req.file.filename;
-      const client = new StreamChat('kkzn98xebx9t', 'c3z8bw38hhtsr9a7yybzmew3qtubs4qf9gymvk84jnf4x4zm9a9h8hk7rz5dqnej');
+      const client = new StreamChat('kkkqp86hb87x', 'c3z8bw38hhtsr9a7yybzmew3qtubs4qf9gymvk84jnf4x4zm9a9h8hk7rz5dqnej','90401');
       req.body.companyInfo=JSON.parse(req.body.companyInfo)
       user.create({
               email: req.body.email,

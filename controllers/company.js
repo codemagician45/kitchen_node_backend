@@ -334,9 +334,6 @@ companyRouter.post("/pay", auth, multer.upload.none(), async function (req, res)
 });
 
 
-function getRandomInt(max) {
-    return Math.floor(Math.random() * Math.floor(max));
-}
 companyRouter.post("/hook/:user_id/:offer_id", async function (req, res) {
     console.log("body",req.body);
 
@@ -348,12 +345,11 @@ companyRouter.post("/hook/:user_id/:offer_id", async function (req, res) {
         if(payment.isPaid()) {
             console.log("payment paid ran")
             ///create messaging room
-            messagingRooms.create({
+            messagingRooms.findOrCreate({where:{
                 "company_id":req.params.user_id,
                 "user_id":offerInfo[0].userid
-            })
+            }})
             ///create messaging room
-            console.log("messaging room created between "+req.params.user_id+" and "+offerInfo[0].userid)
 
             biddingFees.create({
                 "offer_id":req.params.offer_id,

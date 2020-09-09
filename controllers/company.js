@@ -343,12 +343,6 @@ companyRouter.post("/hook/:user_id/:offer_id", async function (req, res) {
 
     let offerInfo = await offersModel.findAll({where:{id:req.params.offer_id}})
 
-    biddingFees.create({
-        "offer_id":req.params.offer_id,
-        "user_id":req.params.user_id,
-        "mollie_id":"local_created"+getRandomInt(1000)
-    })
-
     mollieClient.payments
     .get(req.body.id)
     .then((payment) => {

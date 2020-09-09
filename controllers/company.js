@@ -349,11 +349,11 @@ companyRouter.post("/hook/:user_id/:offer_id", async function (req, res) {
             console.log("payment paid ran")
             ///create messaging room
             messagingRooms.create({
-                "company_id":req.userData.muuid,
-                "user_id":req.params.user_id
+                "company_id":req.params.user_id,
+                "user_id":offerInfo[0].userid
             })
             ///create messaging room
-            console.log("messaging room created between "+req.params.user_id+" and "+req.userData.muuid)
+            console.log("messaging room created between "+req.params.user_id+" and "+offerInfo[0].userid)
 
             biddingFees.create({
                 "offer_id":req.params.offer_id,

@@ -361,10 +361,6 @@ companyRouter.post("/hook/:user_id/:offer_id", async function (req, res) {
                 "mollie_id":payment.id
             }).then()
 
-            messagingRooms.create({
-                "company_id":req.params.user_id,
-                "user_id":offerInfo[0].userid,
-            })
             ///create messaging room
             console.log("messaging room created between "+req.params.user_id+" and "+offerInfo[0].userid)
 

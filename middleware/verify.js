@@ -33,7 +33,9 @@ URLCheck["company"]=[
     "/companies/profile/upload_data",
     "/users/getOffer",
     "/companies/profile/settings",
-    "/companies/dashboard"
+    "/companies/dashboard",
+    "/companies/messages",
+    "/companies/sendMessage",
 ];
 URLCheck["client"]=[
     "/users/profile/password",
@@ -48,6 +50,8 @@ URLCheck["client"]=[
     "/users/getOffer",
     "/users/attendOffer",
     "/users/offers/getBidInfo",
+    "/users/messages",
+    "/users/sendMessage",
 ];
 
 

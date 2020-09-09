@@ -4,7 +4,7 @@ var userRouter = express.Router();
 var passport = require("../passport2");
 var auth = require('../middleware/verify');
 var sequelize = require("sequelize")
-
+const { Op } = require("sequelize");
 const profiles =require("../models/user_profiles");
 const user =require("../models/users");
 const biddingFeesModel = require("../models/bidding_fees");
@@ -13,7 +13,8 @@ var auth = require('../middleware/verify');
 const companies_profiles =require("../models/companies_profiles");
 const CompanyProfileSettings = require("../models/company_profile_settings");
 const offersModel =require("../models/offers");
-
+const messagingRooms = require("../models/messaging_rooms");
+const messagesModel = require("../models/messages");
 const mimeTypeToExtension={
     "image/jpeg":"jpg",
     "image/png":"png",
@@ -226,5 +227,43 @@ userRouter.post("/attendOffer",auth,multer.upload.none(),async function (req, re
             });
         })
 })
+
+userRouter.post("/messages", auth, multer.upload.none(), async function (req, res) {
+    let date= new Date().getTime()
+    await messagesModel.update({isRead:true}, { where: {
+            sender : {
+                [Op.ne]:req.userData.muuid
+            },
+            date : {
+                [Op.lte]:date
+            }
+        }
+    })
+    let messages = await messagesModel.findAll({
+        where:{ room_id:req.body.room_id}
+    })
+    res.send({messages})
+});
+
+userRouter.post("/sendMessage", auth, multer.upload.none(), async function (req, res) {
+    let date= new Date().getTime()
+    let success=true;
+    await messagesModel.create({
+        room_id: req.body.room_id,
+        sender: req.userData.muuid,
+        date: date,
+        isRead:false,
+        message:req.body.message,
+        type:"text"
+    }).catch((err) => {
+        success: false
+    });
+
+    res.send({
+        success:success
+    })
+
+});
+
 
 module.exports = userRouter;

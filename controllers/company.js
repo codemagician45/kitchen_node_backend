@@ -6,7 +6,10 @@ const CompanyProfiles = require("../models/companies_profiles");
 const CompanyProfileSettings = require("../models/company_profile_settings");
 const user = require("../models/users");
 const biddingFees = require("../models/bidding_fees");
+const messagingRooms = require("../models/messaging_rooms");
+const messagesModel = require("../models/messages");
 const offersModel =require("../models/offers");
+const { Op } = require("sequelize");
 var fs = require('fs');
 var md5 = require('md5');
 var path = require('path')
@@ -327,42 +330,96 @@ companyRouter.post("/pay", auth, multer.upload.none(), async function (req, res)
     // webhookUrl: "https://acc27f51ead7.ngrok.io/companies/hook",
     webhookUrl: " http://feestvanverbinding.nl/api/companies/hook/"+req.userData.muuid+"/"+req.body.offer_id,
   });
-    console.log(payment);
-  console.log(payment.id);
-    console.log("pay worked");
   res.send(payment.getCheckoutUrl());
 });
-/*
-companyRouter.post("/check_pay", async function (req, res) {
 
-  mollieClient.payments
-    .get(req.body.payment_id)companies/profile/upload
-    .then((payment) => {
-      // E.g. check if the payment.isPaid()
-      res.send(payment.isPaid())
-    })
-    .catch((error) => {
-      // Handle the error
-    });
-});
-*/
+
+function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+}
 companyRouter.post("/hook/:user_id/:offer_id", async function (req, res) {
-
     console.log("body",req.body);
+    ///create messaging room
+
+    let offerInfo = await offersModel.findAll({where:{id:req.params.offer_id}})
+
+    biddingFees.create({
+        "offer_id":req.params.offer_id,
+        "user_id":req.params.user_id,
+        "mollie_id":"local_created"+getRandomInt(1000)
+    })
+
     mollieClient.payments
     .get(req.body.id)
     .then((payment) => {
         if(payment.isPaid()) {
+
+            ///create messaging room
+            messagingRooms.create({
+                "company_id":req.userData.muuid,
+                "user_id":req.params.user_id
+            })
+            ///create messaging room
+            console.log("messaging room created between "+req.params.user_id+" and "+req.userData.muuid)
+
             biddingFees.create({
                 "offer_id":req.params.offer_id,
                 "user_id":req.params.user_id,
                 "mollie_id":payment.id
             }).then()
+
+            messagingRooms.create({
+                "company_id":req.params.user_id,
+                "user_id":offerInfo[0].userid,
+            })
+            ///create messaging room
+            console.log("messaging room created between "+req.params.user_id+" and "+offerInfo[0].userid)
+
         }
     })
     .catch((error) => {
       // Handle the error
+    })
+  })
+
+companyRouter.post("/messages", auth, multer.upload.none(), async function (req, res) {
+    let date= new Date().getTime()
+    await messagesModel.update({isRead:true}, { where: {
+            sender : {
+                [Op.ne]:req.userData.muuid
+            },
+            date : {
+                [Op.lte]:date
+            },
+            isRead:false
+        }
+    })
+    let messages = await messagesModel.findAll({
+        where:{ room_id:req.body.room_id}
+    })
+    res.send({messages})
+});
+
+
+companyRouter.post("/sendMessage", auth, multer.upload.none(), async function (req, res) {
+    let date= new Date().getTime()
+    let success=true;
+    let messages = await messagesModel.create({
+        room_id: req.body.room_id,
+        sender: req.userData.muuid,
+        date: date,
+        isRead:false,
+        message:req.body.message,
+        type:"text"
+    }).catch((err) => {
+        success: false
     });
-  });
+
+    res.send({
+        success:success
+    })
+
+});
+
 
 module.exports = companyRouter;

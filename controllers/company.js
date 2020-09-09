@@ -367,6 +367,13 @@ companyRouter.post("/hook/:user_id/:offer_id", async function (req, res) {
     })
   })
 
+companyRouter.post("/getRooms", auth, multer.upload.none(), async function (req, res) {
+    let rooms=await messagingRooms.findAll({where:{
+        company_id:req.userData.muuid
+    }})
+    res.send({rooms})
+});
+
 companyRouter.post("/messages", auth, multer.upload.none(), async function (req, res) {
     let date= new Date().getTime()
     await messagesModel.update({isRead:true}, { where: {

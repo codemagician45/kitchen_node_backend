@@ -339,15 +339,14 @@ function getRandomInt(max) {
 }
 companyRouter.post("/hook/:user_id/:offer_id", async function (req, res) {
     console.log("body",req.body);
-    ///create messaging room
 
     let offerInfo = await offersModel.findAll({where:{id:req.params.offer_id}})
-
+    console.log("hook ran")
     mollieClient.payments
     .get(req.body.id)
     .then((payment) => {
         if(payment.isPaid()) {
-
+            console.log("payment paid ran")
             ///create messaging room
             messagingRooms.create({
                 "company_id":req.userData.muuid,
@@ -372,7 +371,7 @@ companyRouter.post("/hook/:user_id/:offer_id", async function (req, res) {
         }
     })
     .catch((error) => {
-      // Handle the error
+        console.log(error)
     })
   })
 

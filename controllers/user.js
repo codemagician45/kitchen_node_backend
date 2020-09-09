@@ -228,7 +228,7 @@ userRouter.post("/attendOffer",auth,multer.upload.none(),async function (req, re
         })
 })
 
-companyRouter.post("/getRooms", auth, multer.upload.none(), async function (req, res) {
+userRouter.post("/getRooms", auth, multer.upload.none(), async function (req, res) {
     let rooms=await messagingRooms.findAll({where:{
             user_id:req.userData.muuid
         }})

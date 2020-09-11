@@ -237,6 +237,16 @@ userRouter.post("/getRooms", auth, multer.upload.none(), async function (req, re
         let companyProfiles=await companies_profiles.findOne({where:{
                 users_id:room.company_id
         }})
+        if(companyProfiles.salutation==null){
+            companyProfiles.salutation=""
+        }
+        if(companyProfiles.name==null){
+            companyProfiles.name=""
+        }
+        if(companyProfiles.surname==null){
+            companyProfiles.surname=""
+        }
+        room.companyNameAndSurname=companyProfiles.salutation+" "+companyProfiles.name+" "+companyProfiles.surname
         room.profilePhoto=companyProfiles.photo
 
     }

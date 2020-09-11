@@ -369,10 +369,18 @@ companyRouter.post("/hook/:user_id/:offer_id", async function (req, res) {
 
 companyRouter.post("/getRooms", auth, multer.upload.none(), async function (req, res) {
     let rooms=await messagingRooms.findAll({where:{
-        company_id:req.userData.muuid
-    }})
-    res.send({rooms})
-});
+            user_id:req.userData.muuid
+        }})
+
+    for (const room of rooms){
+        let userProfiles=await user.findOne({where:{
+                users_id:room.user_id
+            }})
+        room.profilePhoto=userProfiles.photo
+
+    }
+    res.send(rooms)
+})
 
 companyRouter.post("/messages", auth, multer.upload.none(), async function (req, res) {
     let date= new Date().getTime()

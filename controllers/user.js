@@ -232,8 +232,16 @@ userRouter.post("/getRooms", auth, multer.upload.none(), async function (req, re
     let rooms=await messagingRooms.findAll({where:{
             user_id:req.userData.muuid
         }})
-    res.send({rooms})
-});
+
+    for (const room of rooms){
+        let companyProfiles=await companies_profiles.findOne({where:{
+                users_id:room.company_id
+        }})
+        room.profilePhoto=companyProfiles.photo
+
+    }
+    res.send(rooms)
+})
 
 userRouter.post("/messages", auth, multer.upload.none(), async function (req, res) {
     let date= new Date().getTime()

@@ -408,11 +408,11 @@ companyRouter.post("/messages", auth, multer.upload.none(), async function (req,
         where:{ room_id:req.body.room_id}
     })
 
-    essages.filter(message=>{
+    messages.filter(message=>{
         if(message.sender==req.userData.muuid){
-            message.sender="company"
+            message.sender="me"
         }else{
-            message.sender="user"
+            message.sender="other"
         }
         return message
     })

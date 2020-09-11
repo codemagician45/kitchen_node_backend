@@ -270,9 +270,9 @@ userRouter.post("/messages", auth, multer.upload.none(), async function (req, re
 
     messages.filter(message=>{
         if(message.sender==req.userData.muuid){
-            message.sender="user"
+            message.sender="me"
         }else{
-            message.sender="company"
+            message.sender="other"
         }
         return message
     })

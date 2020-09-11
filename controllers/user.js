@@ -267,6 +267,16 @@ userRouter.post("/messages", auth, multer.upload.none(), async function (req, re
     let messages = await messagesModel.findAll({
         where:{ room_id:req.body.room_id}
     })
+
+    messages.filter(message=>{
+        if(message.sender==req.userData.muuid){
+            message.sender="user"
+        }else{
+            message.sender="company"
+        }
+        return message
+    })
+
     res.send({messages})
 });
 

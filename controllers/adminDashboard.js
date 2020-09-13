@@ -253,7 +253,7 @@ adminDashboard.post("/getRooms", auth, multer.upload.none(), async function (req
         if(companiesProfiles.surname==null){
             userProfiles.surname=""
         }
-        room.userNameAndSurname=userProfiles.salutation+" "+userProfiles.name+" "+userProfiles.surname + " & " +
+        room.nameAndSurname=userProfiles.salutation+" "+userProfiles.name+" "+userProfiles.surname + " & " +
             companiesProfiles.salutation+" "+companiesProfiles.name+" "+companiesProfiles.surname
 
     }

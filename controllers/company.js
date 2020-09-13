@@ -389,7 +389,7 @@ companyRouter.post("/getRooms", auth, multer.upload.none(), async function (req,
         if(userProfiles.surname==null){
             userProfiles.surname=""
         }
-        room.userNameAndSurname=userProfiles.salutation+" "+userProfiles.name+" "+userProfiles.surname
+        room.nameAndSurname=userProfiles.salutation+" "+userProfiles.name+" "+userProfiles.surname
         room.profilePhoto=userProfiles.photo
 
     }

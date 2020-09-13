@@ -8,7 +8,10 @@ const biddingFees = require("../models/bidding_fees");
 const profiles =require("../models/user_profiles");
 const companies_profiles =require("../models/companies_profiles");
 const user =require("../models/users");
+const userProfilesModel =require("../models/user_profiles");
 const offersModel =require("../models/offers");
+const messagingRooms = require("../models/messaging_rooms");
+const messagesModel = require("../models/messages");
 const CompanyProfileSettings = require("../models/company_profile_settings");
 var path = require('path');
 var fs = require('fs');
@@ -219,5 +222,68 @@ adminDashboard.post("/uploadDocuments",auth,multer.upload.array("files[]"),async
     })
 })
 
+adminDashboard.post("/getRooms", auth, multer.upload.none(), async function (req, res) {
+    let rooms=await messagingRooms.findAll({
+        order: [
+            ['id', 'DESC'],
+        ]})
+
+    for (const room of rooms){
+        let userProfiles=await userProfilesModel.findOne({where:{
+                users_id:room.user_id
+            }})
+        if(userProfiles.salutation==null){
+            userProfiles.salutation=""
+        }
+        if(userProfiles.name==null){
+            userProfiles.name=""
+        }
+        if(userProfiles.surname==null){
+            userProfiles.surname=""
+        }
+        let companiesProfiles=await companies_profiles.findOne({where:{
+                users_id:room.company_id
+            }})
+        if(companiesProfiles.salutation==null){
+            userProfiles.salutation=""
+        }
+        if(companiesProfiles.name==null){
+            userProfiles.name=""
+        }
+        if(companiesProfiles.surname==null){
+            userProfiles.surname=""
+        }
+        room.userNameAndSurname=userProfiles.salutation+" "+userProfiles.name+" "+userProfiles.surname + " & " +
+            companiesProfiles.salutation+" "+companiesProfiles.name+" "+companiesProfiles.surname
+
+    }
+    res.send(rooms)
+})
+
+
+adminDashboard.post("/messages", auth, multer.upload.none(), async function (req, res) {
+    let date= new Date().getTime()
+    let messages = await messagesModel.findAll({
+        where:{ room_id:req.body.room_id},
+        order: [
+            ['id', 'ASC'],
+        ]})
+    let roomInfo=await messagingRooms.findOne({
+        where:{
+            id:req.body.room_id
+        }
+    })
+
+    messages.filter(message=>{
+        if(message.sender==roomInfo.users_id){
+            message.sender="me"
+        }else{
+            message.sender="other"
+        }
+        return message
+    })
+
+    res.send({messages})
+});
 
 module.exports = adminDashboard;

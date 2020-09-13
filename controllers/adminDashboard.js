@@ -275,7 +275,7 @@ adminDashboard.post("/messages", auth, multer.upload.none(), async function (req
     })
 
     messages.filter(message=>{
-        if(message.sender==roomInfo.users_id){
+        if(message.sender==roomInfo.user_id){
             message.sender="me"
         }else{
             message.sender="other"

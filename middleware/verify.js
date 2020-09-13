@@ -37,6 +37,7 @@ URLCheck["company"]=[
     "/companies/messages",
     "/companies/getRooms",
     "/companies/sendMessage",
+    "/companies/sendFileViaMessage",
 ];
 URLCheck["client"]=[
     "/users/profile/password",
@@ -54,6 +55,7 @@ URLCheck["client"]=[
     "/users/messages",
     "/users/getRooms",
     "/users/sendMessage",
+    "/users/sendFileViaMessage",
 ];
 
 

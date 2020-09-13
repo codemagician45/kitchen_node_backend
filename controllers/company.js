@@ -441,4 +441,27 @@ companyRouter.post("/sendMessage", auth, multer.upload.none(), async function (r
 });
 
 
+companyRouter.post("/sendFileViaMessage", auth, multerFiles.upload.single("file"), async function (req, res) {
+    let date= new Date().getTime()
+    let success=true;
+    let file = req.file.filename;
+    fs.renameSync(req.file.path, "messagesFiles/"+req.file.filename+path.extname(req.file.originalname))
+    console.log(req.file);
+    await messagesModel.create({
+        room_id: JSON.parse(req.body.room_id),
+        sender: req.userData.muuid,
+        date: date,
+        isRead:false,
+        message:file+path.extname(req.file.originalname),
+        type:"file"
+    }).catch((err) => {
+        success: false
+    });
+
+    res.send({
+        success:success
+    })
+
+});
+
 module.exports = companyRouter;

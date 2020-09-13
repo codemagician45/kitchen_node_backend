@@ -1,6 +1,8 @@
 const multer  = require('../images/multer');
+const multerFiles = require('../messagesFiles/multer');
 var express = require('express');
 var userRouter = express.Router();
+var fs = require('fs');
 var passport = require("../passport2");
 var auth = require('../middleware/verify');
 var sequelize = require("sequelize")
@@ -10,6 +12,7 @@ const user =require("../models/users");
 const biddingFeesModel = require("../models/bidding_fees");
 var md5 = require('md5');
 var auth = require('../middleware/verify');
+var path = require('path');
 const companies_profiles =require("../models/companies_profiles");
 const CompanyProfileSettings = require("../models/company_profile_settings");
 const offersModel =require("../models/offers");
@@ -300,5 +303,28 @@ userRouter.post("/sendMessage", auth, multer.upload.none(), async function (req,
 
 });
 
+
+userRouter.post("/sendFileViaMessage", auth, multerFiles.upload.single("file"), async function (req, res) {
+    let date= new Date().getTime()
+    let success=true;
+    let file = req.file.filename;
+    fs.renameSync(req.file.path, "messagesFiles/"+req.file.filename+path.extname(req.file.originalname))
+    console.log(req.file);
+    await messagesModel.create({
+        room_id: JSON.parse(req.body.room_id),
+        sender: req.userData.muuid,
+        date: date,
+        isRead:false,
+        message:file+path.extname(req.file.originalname),
+        type:"file"
+    }).catch((err) => {
+        success: false
+    });
+
+    res.send({
+        success:success
+    })
+
+});
 
 module.exports = userRouter;

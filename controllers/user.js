@@ -234,7 +234,9 @@ userRouter.post("/attendOffer",auth,multer.upload.none(),async function (req, re
 userRouter.post("/getRooms", auth, multer.upload.none(), async function (req, res) {
     let rooms=await messagingRooms.findAll({where:{
             user_id:req.userData.muuid
-        }})
+        },order: [
+            ['id', 'DESC'],
+        ]})
 
     for (const room of rooms){
         let companyProfiles=await companies_profiles.findOne({where:{
@@ -268,8 +270,12 @@ userRouter.post("/messages", auth, multer.upload.none(), async function (req, re
         }
     })
     let messages = await messagesModel.findAll({
-        where:{ room_id:req.body.room_id}
-    })
+        where:{ room_id:req.body.room_id},
+        order: [
+            ['id', 'DESC'],
+        ]})
+
+
 
     messages.filter(message=>{
         if(message.sender==req.userData.muuid){

@@ -372,7 +372,9 @@ companyRouter.post("/hook/:user_id/:offer_id", async function (req, res) {
 companyRouter.post("/getRooms", auth, multer.upload.none(), async function (req, res) {
     let rooms=await messagingRooms.findAll({where:{
             company_id:req.userData.muuid
-        }})
+        },order: [
+            ['id', 'DESC'],
+        ]})
 
     for (const room of rooms){
         let userProfiles=await userProfilesModel.findOne({where:{
@@ -406,9 +408,13 @@ companyRouter.post("/messages", auth, multer.upload.none(), async function (req,
             isRead:false
         }
     })
+
+
     let messages = await messagesModel.findAll({
-        where:{ room_id:req.body.room_id}
-    })
+        where:{ room_id:req.body.room_id},
+        order: [
+            ['id', 'DESC'],
+        ]})
 
     messages.filter(message=>{
         if(message.sender==req.userData.muuid){

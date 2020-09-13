@@ -1,10 +1,12 @@
 const multer = require("../images/multer");
+const multerFiles = require('../messagesFiles/multer');
 var express = require("express");
 var companyRouter = express.Router();
 var auth = require("../middleware/verify");
 const CompanyProfiles = require("../models/companies_profiles");
 const CompanyProfileSettings = require("../models/company_profile_settings");
 const user = require("../models/users");
+const userProfiles = require("../models/user_profiles");
 const biddingFees = require("../models/bidding_fees");
 const messagingRooms = require("../models/messaging_rooms");
 const messagesModel = require("../models/messages");
@@ -373,7 +375,7 @@ companyRouter.post("/getRooms", auth, multer.upload.none(), async function (req,
         }})
 
     for (const room of rooms){
-        let userProfiles=await user.findOne({where:{
+        let userProfiles=await userProfiles.findOne({where:{
                 users_id:room.user_id
             }})
         if(userProfiles.salutation==null){

@@ -413,7 +413,7 @@ companyRouter.post("/messages", auth, multer.upload.none(), async function (req,
     let messages = await messagesModel.findAll({
         where:{ room_id:req.body.room_id},
         order: [
-            ['id', 'DESC'],
+            ['id', 'ASC'],
         ]})
 
     messages.filter(message=>{

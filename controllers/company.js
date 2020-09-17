@@ -327,10 +327,10 @@ companyRouter.post("/pay", auth, multer.upload.none(), async function (req, res)
       value: amount, // We enforce the correct number of decimals through strings
     },
     description: "Bidding for new job",
-    redirectUrl: "https://feestvanverbinding.nl/companies/offers",
+    redirectUrl: "https://portal.keukenvergelijking.nl/companies/offers",
     // redirectUrl: "http://localhost:3005/companies/offers",
     // webhookUrl: "https://acc27f51ead7.ngrok.io/companies/hook",
-    webhookUrl: " http://feestvanverbinding.nl/api/companies/hook/"+req.userData.muuid+"/"+req.body.offer_id,
+    webhookUrl: " https://portal.keukenvergelijking.nl/api/companies/hook/"+req.userData.muuid+"/"+req.body.offer_id,
   });
   res.send(payment.getCheckoutUrl());
 });

@@ -227,13 +227,10 @@ app.listen(3100, function () {
       });
   });
   app.get("/mailSent", multer.upload.none(), function (req, res) {
-    let mailResult = mailSender.mailSend({
-      from: "asimmurat17@gmail.com",
-      to: "asimmurat17@gmail.com",
-      subject: "Design Your Model S | Tesla",
-      text: "Have the most fun you can in a car. Get your Tesla today!",
-    });
-    res.send(mailResult);
+    let mailResult = mailSender.mail("asimmurat17@gmail.com","query test","<b1>HELLO WORLD!FROM MAIL</b1>");
+  });
+  app.get("/runMailQuery", multer.upload.none(), function (req, res) {
+    mailSender.runQuery();
   });
   /* WIP */
 
@@ -266,6 +263,7 @@ app.listen(3100, function () {
               profile.create({
                   users_id: newUser.id,
                 });
+              /*
                 let mailResult = mailSender.mailSend({
                     from: "asimmurat17@gmail.com",
                     to: req.body.email,
@@ -274,7 +272,9 @@ app.listen(3100, function () {
                         "<div style='margin:10px;border:1px solid red'>TEST</div></html>",
                 });
                 console.log(mailResult);
+              */
                 console.log("mail olayi bitti")
+
                 res.send({
                   success: true,
                   user: newUser,

@@ -3,8 +3,8 @@ const recursive = require("recursive-readdir-sync");
 const path = require("path");
 const sequelize = new Sequelize(
     "mutfak",
-    "asim",
-    "11_Murat_11",
+    "postgres",
+    "11murat11",
     {
         query:{
             raw:true,

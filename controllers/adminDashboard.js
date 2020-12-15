@@ -161,6 +161,43 @@ adminDashboard.post("/updateStatusOffer",auth,multer.upload.none(),async functio
                 success: success,
             });
         });
+
+    if(req.body.status=="active"){
+        await offersModel.findOne({where:{id : req.body.offerId }}).then(async(offer)=>{
+            await user.findOne({where:{id:offer.userid}}).then(async user=>{
+                await mailSender.mail(user.email,"Je offerte is nu actief","Beste, <br>" +
+                    "<br>" +
+                    "Je offerte is nu actief." +
+                    "De keukenaanbieders zullen spoedig mogelijk met een voorstel komen." +
+                    "Op <a href='portal.keukenvergelijking.nl/login'>portal.keukenvergelijking.nl/login</a> kan je deze procedure volgen en het voorstel van de keukenaanbieders bekijken. " +
+                    "Keukenvergelijking.nl");
+            })
+            await mailSender.mail("admin@keukenvergelijking.nl","Concept offerte is op actief gezet.","Concept offerte is op actief gezet.");
+
+
+            await user.findAll({where:{type:"company"}}).then(companies=>{
+                companies.forEach(async company=>{
+                    await mailSender.mail(company.email,"Je offerte is nu actief","Beste,<br>" +
+                        "<br>" +
+                        "De beheerder heeft een offerte beschikbaar gesteld. Zou je met een voorstel willen komen?<br>" +
+                        "<br>" +
+                        "Voorstel doen"+
+                        "Keukenvergelijking.nl");
+
+                    let offersActiveCount =await offersModel.count({raw: true,where:{status:"active"}})
+                    await mailSender.mail(company.email,"Bekijk de voorstellen van de keukenaanbieders en overweeg welke het beste voor je is.","Beste,<br>" +
+                        "<br>" +
+                        "Vandaag actief: "+ offersActiveCount +". Zou je geen voorstel willen doen?" +
+                        "Bekijk de voorstellen van de keukenaanbieders en overweeg welke het beste voor je is." +
+                        "<br>" +
+                        "Keukenvergelijking.nl");
+
+
+                })
+            })
+        })
+
+    }
 })
 
 adminDashboard.post("/makeActive",auth,multer.upload.array("files[]"),async function (req,res) {

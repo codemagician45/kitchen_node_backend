@@ -52,6 +52,9 @@ app.use(express.static(__dirname + '/images'));
 app.use(express.static(__dirname + '/uploaded_files'));
 
 const client = new OAuth2Client(google_credentials.web.client_id);
+setInterval(function(){
+    mailSender.runQuery();
+}, 10000)
 
 app.listen(3100, function () {
   console.log("Yayın portu : 3100");
@@ -230,7 +233,8 @@ app.listen(3100, function () {
     let mailResult = mailSender.mail("asimmurat17@gmail.com","query test","<b1>HELLO WORLD!FROM MAIL</b1>");
   });
   app.get("/runMailQuery", multer.upload.none(), function (req, res) {
-    mailSender.runQuery();
+    return mailSender.runQuery();
+
   });
   /* WIP */
 
@@ -263,17 +267,20 @@ app.listen(3100, function () {
               profile.create({
                   users_id: newUser.id,
                 });
-              /*
-                let mailResult = mailSender.mailSend({
-                    from: "asimmurat17@gmail.com",
-                    to: req.body.email,
-                    subject: "Register from Feestvanverbinding ",
-                    html: "<html>This is completely html5 standarts <br> <h1>LiKe Header 1 </h1>" +
-                        "<div style='margin:10px;border:1px solid red'>TEST</div></html>",
-                });
-                console.log(mailResult);
-              */
-                console.log("mail olayi bitti")
+                mailSender.mail(req.body.email,"Bedankt voor je inschrijving bij Keukenvergelijking.nl! ","Goedendag, <br>" +
+                    "<br>" +
+                    "Bedankt voor je inschrijving bij Keukenvergelijking.nl! " +
+                    "Je lidmaatschap is gratis en uiteraard niet-bindend. " +
+                    "Nu dat je bent ingeschreven, kan je direct aan de slag gaan met het uploaden of aanmaken van een offerte. <br>" +
+                    "<br>" +
+                    "Vergelijk, overweeg en kies de beste keuken deals!<br>" +
+                    "<br>" +
+                    "Met vriendelijke groet,<br>" +
+                    "<br>" +
+                    "Keukenvergelijking.nl");
+
+            mailSender.mail("admin@keukenvergelijking.nl","Er is een nieuwe aanmelding. ","Er is een nieuwe aanmelding." +
+                "Keukenvergelijking.nl");
 
                 res.send({
                   success: true,
@@ -322,7 +329,15 @@ app.listen(3100, function () {
                   });
 
               });
-              })
+              mailSender.mail(req.body.email,"Je zakelijke aanmelding is succesvol geregistreerd.","Beste,<br>" +
+                  "<br>" +
+                  "Je zakelijke aanmelding is succesvol geregistreerd. " +
+                  "Rond je aanmelding af en krijg toegang tot alle aanvragen en vergelijkingen.");
+
+              mailSender.mail("admin@keukenvergelijking.nl","Een nieuwe keukenaanbieder heeft zich aangemeld.","Een nieuwe keukenaanbieder heeft zich aangemeld." +
+                  "Keukenvergelijking.nl");
+
+          })
           }).catch((err) => {
               console.log(err)
               res.send({

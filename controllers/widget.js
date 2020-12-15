@@ -10,6 +10,7 @@ var fs = require('fs');
 var md5 = require('md5');
 var path = require('path')
 
+const mailSender = require("../mailSender");
 const mimeTypeToExtension={
     "image/jpeg":"jpg",
     "image/png":"png",
@@ -60,7 +61,7 @@ widgetRouter.post("/offer",multer.upload.array("files[]"),async function (req,re
     req.body.offer.specs.type = req.body.offer.type
     offers.create(
         req.body.offer.specs
-    ).then(newOffer=>{
+    ).then(async newOffer=>{
 
         let folder_name = "uploaded_files/"+newOffer.dataValues.id+"_offer"
         fs.mkdirSync(folder_name)
@@ -78,6 +79,33 @@ widgetRouter.post("/offer",multer.upload.array("files[]"),async function (req,re
                 }})
 
 
+        mailSender.mail(req.body.email,"Je offerte aanvraag is door ons ontvangen. ","Beste,<br>"+
+        "Je offerte aanvraag is door ons ontvangen.<br>"+
+        "We hebben je lidmaatschap verwerkt.<br>"+
+        "Binnenkort zal de beheerder je offerte op actief zetten.<br>"+
+        "Daar ontvang je nog een bericht over.");
+
+        mailSender.mail("admin@keukenvergelijking.nl","Er is een nieuw conceptvoorstel binnengekomen. ","Er is een nieuw conceptvoorstel binnengekomen.Ik zou het op actief moeten zetten. ");
+
+
+
+        let clientCount =await user.count({raw: true,where:{type:"client"}})
+        let companiesCount =await user.count({raw: true,where:{type:"company"}})
+        let offersConceptCount =await offers.count({raw: true,where:{status:"concept"}})
+        let offersActiveCount =await offers.count({raw: true,where:{status:"active"}})
+        let offersAttendCount =await offers.count({raw: true,where:{status:"attend"}})
+        let offersDoneCount =await offers.count({raw: true,where:{status:"done"}})
+        let ReactionPartOne = offersConceptCount
+
+        mailSender.mail("admin@keukenvergelijking.nl","Stuur dagelijks een verslag",
+            "offersCount : "+ offersConceptCount + "<br>" +
+            "companiesCount :"+ companiesCount + "<br>" +
+            "clientCount : "+ clientCount + "<br>" +
+            "offersActiveCount : "+  offersActiveCount + "<br>" +
+            "offersAttendCount : "+  offersAttendCount + "<br>" +
+            "offersDoneCount : "+  offersDoneCount + "<br>" +
+            "reactionCount: "+ReactionPartOne + "<br>"
+            );
         res.send({
             success:true
         })

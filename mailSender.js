@@ -11,7 +11,11 @@ let mailTransporter = {
         pass: 'Klanten2020@'
     }
 }
-
+function format_mail(mailText){
+    let format_mail_header= "<html>";
+    let format_mail_end = "</html>";
+    return format_mail_header+mailText+format_mail_end;
+}
 async function mail(mail,subject,html) {
 
     let transport = nodemailer.createTransport(mailTransporter);
@@ -19,10 +23,9 @@ async function mail(mail,subject,html) {
     let mail_queries_result = await mail_queries.create({
         mail:mail,
         subject:subject,
-        html:html,
+        html:format_mail(html),
         is_sent:0,
     })
-    console.log(mail_queries_result);
 }
 
 async function runQuery(){
@@ -36,13 +39,7 @@ async function runQuery(){
             html: "<html>"+mail.html+"</html>",
         });
         await mail_queries.update({is_sent:1},{where:{id:mail.id}})
-
-
     })
-    /*
-
-
-     */
 }
 
 

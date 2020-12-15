@@ -19,7 +19,7 @@ const model = sequelize.define(
             type: Sequelize.STRING,
             defaultValue:null,
             allowNull:false,
-            unique: true
+            unique: false
         },
         html:{
             type: Sequelize.STRING,

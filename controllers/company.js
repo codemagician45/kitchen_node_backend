@@ -15,7 +15,7 @@ const { Op } = require("sequelize");
 var fs = require('fs');
 var md5 = require('md5');
 var path = require('path')
-
+const mailSender = require("../mailSender");
 const { createMollieClient } = require("@mollie/api-client");
 
 
@@ -30,7 +30,7 @@ function getRandomInt(max) {
 
 
 const mollieClient = createMollieClient({
-  apiKey: "test_J53TsrBnHFG6HMUdUUJ5xysQgNTpj5",
+  apiKey: "J53TsrBnHFG6HMUdUUJ5xysQgNTpj5",
 });
 
 var md5 = require("md5");
@@ -303,9 +303,23 @@ companyRouter.post("/becomeBidder", auth, multer.upload.array("files[]"), functi
     }
         biddingFees.update({files:JSON.stringify(filePaths)},{where : {
                     id : biddingFeeDetail.id
-                }})
+                }}).then(async ()=>{
 
+        //Er is een voorstel gedaan op een actieve offerte.
 
+            await offersModel.findOne({where:{id:req.body.bid.offer_id}}).then(async offer=>{
+                await user.findOne({where:{id:offer.userid}}).then(async user=>{
+                    await mailSender.mail(user.email,"Er is een voorstel gedaan op een actieve offerte.","Er is een voorstel gedaan op een actieve offerte.<br>"+
+                        "Keukenvergelijking.nl");
+
+                })
+                await user.findOne({where:{id:req.userData.muuid}}).then(async user=>{
+                    await mailSender.mail(user.email,"Je hebt een voorstel gedaan.","Je hebt een voorstel gedaan.<br>" +
+                        "Zodra de klant akkoord geeft zullen wij jou hier op de hoogte van houden.<br>"+
+                        "Keukenvergelijking.nl");
+                })
+            })
+        })
             res.send({
             success: true ,
             biddingDetail : biddingFeeDetail,
@@ -357,11 +371,18 @@ companyRouter.post("/hook/:user_id/:offer_id", async function (req, res) {
                 "offer_id":req.params.offer_id,
                 "user_id":req.params.user_id,
                 "mollie_id":payment.id
-            }).then()
+            }).then(async ()=> {
+                await mailSender.mail("admin@keukenvergelijking.nl", "Het bedrijf heeft betaald.", "Het bedrijf heeft betaald." +
+                    "Keukenvergelijking.nl");
 
-            ///create messaging room
-            console.log("messaging room created between "+req.params.user_id+" and "+offerInfo[0].userid)
+                await user.findOne({where: {id:req.params.user_id}}).then(async (user)=>{
+                    await mailSender.mail(user.email, "Je hebt een betaling verricht voor een offerte.", "Je hebt een betaling verricht voor een offerte." +
+                        "Keukenvergelijking.nl");
+                    ///create messaging room
 
+                })
+                console.log("messaging room created between " + req.params.user_id + " and " + offerInfo[0].userid)
+            })
         }
     })
     .catch((error) => {
@@ -428,25 +449,40 @@ companyRouter.post("/messages", auth, multer.upload.none(), async function (req,
 });
 
 
-companyRouter.post("/sendMessage", auth, multer.upload.none(), async function (req, res) {
-    let date= new Date().getTime()
-    let success=true;
+companyRouter.post("/sendMessage", auth, multer.upload.none(),async function (req, res) {
+    let date = new Date().getTime()
+    let success = true;
     let messages = await messagesModel.create({
         room_id: req.body.room_id,
         sender: req.userData.muuid,
         date: date,
-        isRead:false,
-        message:req.body.message,
-        type:"text"
+        isRead: false,
+        message: req.body.message,
+        type: "text"
     }).catch((err) => {
         success: false
+    }).then(async () => {
+        await messagingRooms.findOne({where: {id: req.body.room_id}}).then(async (room) => {
+            await user.findOne({where: {id: room.user_id}}).then(async (room) => {
+                await mailSender.mail(user.email, "De keukenaanbieder heeft je een bericht verstuurd. ", "De keukenaanbieder heeft je een bericht verstuurd. " +
+                    "Keukenvergelijking.nl");
+
+            })
+
+            await user.findOne({where: {id: room.company_id}}).then(async (room) => {
+                await mailSender.mail(user.email, "Je hebt de klant een bericht verstuurd.", "Je hebt de klant een bericht verstuurd. " +
+                    "Zodra de klant antwoord geeft zal je een bericht van ons ontvangen." +
+                    "Keukenvergelijking.nl");
+
+            })
+        });
+
+        res.send({
+            success: success
+        })
+
     });
-
-    res.send({
-        success:success
-    })
-
-});
+})
 
 
 companyRouter.post("/sendFileViaMessage", auth, multerFiles.upload.single("file"), async function (req, res) {

@@ -78,14 +78,15 @@ widgetRouter.post("/offer",multer.upload.array("files[]"),async function (req,re
                 id : newOffer.dataValues.id
                 }})
 
+        await user.findOne({where:{id:req.body.offer.specs.userid}}).then((user)=>{
+            mailSender.mail(user.email,"Je offerte aanvraag is door ons ontvangen. ","Beste,<br>"+
+                "Je offerte aanvraag is door ons ontvangen.<br>"+
+                "We hebben je lidmaatschap verwerkt.<br>"+
+                "Binnenkort zal de beheerder je offerte op actief zetten.<br>"+
+                "Daar ontvang je nog een bericht over.");
 
-        mailSender.mail(req.body.email,"Je offerte aanvraag is door ons ontvangen. ","Beste,<br>"+
-        "Je offerte aanvraag is door ons ontvangen.<br>"+
-        "We hebben je lidmaatschap verwerkt.<br>"+
-        "Binnenkort zal de beheerder je offerte op actief zetten.<br>"+
-        "Daar ontvang je nog een bericht over.");
-
-        mailSender.mail("admin@keukenvergelijking.nl","Er is een nieuw conceptvoorstel binnengekomen. ","Er is een nieuw conceptvoorstel binnengekomen.Ik zou het op actief moeten zetten. ");
+            mailSender.mail("admin@keukenvergelijking.nl","Er is een nieuw conceptvoorstel binnengekomen. ","Er is een nieuw conceptvoorstel binnengekomen.Ik zou het op actief moeten zetten. ");
+        })
 
 
 
